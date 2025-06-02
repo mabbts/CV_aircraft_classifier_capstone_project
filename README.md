@@ -5,5 +5,4 @@ Place holder text.
 ├── README.md
 ├── .git
 ```
-```
 
