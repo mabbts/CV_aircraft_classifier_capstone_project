@@ -1,6 +1,3 @@
-# Aircraft Classifier
-Place holder text.
-<!-- TREE START -->
 ```text
 .
 ├── README.md
@@ -10,4 +7,3 @@ Place holder text.
 
 1 directory, 4 files
 ```
-<!-- TREE END -->
