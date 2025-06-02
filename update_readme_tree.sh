@@ -2,7 +2,12 @@
 
 # Create a new tree block
 echo '```text' > tree.md
-tree -L 3 >> tree.md
+{
+  echo '```text'
+  echo "├── README.md"
+  find . -maxdepth 1 -type d ! -name "." | sort | sed 's|^\./|├── |'
+  echo '```'
+} > tree.md
 echo '```' >> tree.md
 
 # Replace the tree block in README.md between TREE START and TREE END markers
