@@ -24,3 +24,4 @@ tree.txt
 # IDE configs
 .vscode/
 .idea/
+aircraft_classifier_env/
