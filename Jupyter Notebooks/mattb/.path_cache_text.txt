@@ -1,1 +1,1 @@
-/Users/mads/Desktop/Capstone/data
+/Users/matthewboarts/Desktop/Capstone/fgvc-aircraft-2013b/data/labels
