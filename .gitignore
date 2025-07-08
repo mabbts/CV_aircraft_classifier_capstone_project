@@ -1,1 +1,23 @@
+# macOS system files
 .DS_Store
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment files
+.env
+.venv/
+*.env
+
+# Logs and temp
+*.log
+*.tmp
+
+# Tree output
+tree.md
+tree.txt
+
+# IDE configs
+.vscode/
+.idea/
+aircraft_classifier_env/
