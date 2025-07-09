@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 from torch.utils.data import Dataset
 from huggingface_hub import snapshot_download
-from hf_login import get_hf_token
+from src.hf_login import get_hf_token
 
 class FGVCAircraftDataset(Dataset):
     ALLOWED = {"manufacturer", "family", "variant"}
