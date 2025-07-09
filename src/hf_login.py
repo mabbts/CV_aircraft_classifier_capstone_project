@@ -14,8 +14,8 @@ def get_hf_token():
 
     #Get the hugging face token
     hf_token = os.getenv("HF_TOKEN")
-    if not hf_token:
-        raise RuntimeError("HF_TOKEN not set")
+    # if not hf_token:
+    #     raise RuntimeError("HF_TOKEN not set")
     return hf_token
 
 def login_to_huggingface():
