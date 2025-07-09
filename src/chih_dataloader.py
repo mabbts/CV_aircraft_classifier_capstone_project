@@ -26,8 +26,8 @@ class FGVCAircraftDataset(Dataset):
         # 1) if root looks like an HF repo_id, pull it down
         if not os.path.isdir(root) and "/" in root:
             # clone the entire repo and return path to the `data/` subfolder
-            hf_token = get_hf_token()
-            repo_path = snapshot_download(root, repo_type="dataset", token=hf_token, max_workers=1)
+            hf = get_hf_token()
+            repo_path = snapshot_download(root, repo_type="dataset", token=hf, max_workers=1)
             root = os.path.join(repo_path, "data")
         self.root         = root
         self.split        = split
@@ -75,7 +75,7 @@ class FGVCAircraftDataset(Dataset):
 
 
 
-ds_hf = FGVCAircraftDataset(
-    root="chocp/fgvc-aircraft-2013b",
-    split="test", level="manufacturer", transform=None
-)
+# ds_hf = FGVCAircraftDataset(
+#     root="chocp/fgvc-aircraft-2013b",
+#     split="test", level="manufacturer", transform=None
+# )
