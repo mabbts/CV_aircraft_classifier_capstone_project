@@ -8,6 +8,16 @@ from dotenv import load_dotenv
 import os
 from huggingface_hub import login
 
+def get_hf_token():
+    #load environmental variables from .env
+    load_dotenv()
+
+    #Get the hugging face token
+    hf_token = os.getenv("HF_TOKEN")
+    if not token:
+            raise RuntimeError("HF_TOKEN not set")
+    return token
+
 def login_to_huggingface():
     #load environmental variables from .env
     load_dotenv()

@@ -3,7 +3,7 @@ from PIL import Image
 import numpy as np
 from torch.utils.data import Dataset
 from huggingface_hub import snapshot_download
-
+from hf_login import get_hf_token
 
 class FGVCAircraftDataset(Dataset):
     ALLOWED = {"manufacturer", "family", "variant"}
@@ -26,7 +26,7 @@ class FGVCAircraftDataset(Dataset):
         # 1) if root looks like an HF repo_id, pull it down
         if not os.path.isdir(root) and "/" in root:
             # clone the entire repo and return path to the `data/` subfolder
-            repo_path = snapshot_download(root, repo_type="dataset", token=secrets.hf, max_workers=1)
+            repo_path = snapshot_download(root, repo_type="dataset", token=get_hf_token(), max_workers=1)
             root = os.path.join(repo_path, "data")
         self.root         = root
         self.split        = split
@@ -71,6 +71,9 @@ class FGVCAircraftDataset(Dataset):
             return img, class_str
         else:
             return img, self.class_to_idx[class_str]
+
+
+
 ds_hf = FGVCAircraftDataset(
     root="chocp/fgvc-aircraft-2013b",
     split="test", level="manufacturer", transform=None
