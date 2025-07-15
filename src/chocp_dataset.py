@@ -58,20 +58,24 @@ class FGVCAircraftDataset(Dataset):
         img_id, class_str = self.samples[idx]
         img_path = os.path.join(self.root, "images", f"{img_id}.jpg")
         img      = Image.open(img_path).convert("RGB")
+        img_np = np.array(img)
+
         if self.cropped:
             xmin, ymin, xmax, ymax = self.bboxes[img_id]
             img = img.crop((xmin, ymin, xmax, ymax))
+
         if self.transform:
             if not self.album:
-                img = self.transform(img)
+                img = self.transform(img) #pytorch transoform
             else:
-                # albumentations expects numpy array
-                img_np = np.array(img)
-                img = self.transform(image=img_np)["image"]
+                aug = self.transform(image = img_np)
+                img = aug['image'] # albumentations
+
         if self.return_class:
             return img, class_str
-        else:
-            return img, self.class_to_idx[class_str]
+
+        class_idx = self.class_to_idx[class_str]
+        return img, class_idx
 
 
 
