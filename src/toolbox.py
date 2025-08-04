@@ -54,6 +54,20 @@ import sys
 import io
 import base64
 
+# # Starting from chocp/, go up two levels to parent_dir/
+# parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
+
+# # Prepend to sys.path so Python can find src/
+# if parent_dir not in sys.path:
+#     sys.path.insert(0, parent_dir)
+
+# from src.chocp_dataset import FGVCAircraftDataset
+cache_dir = Path.home() / "Capstone" / "FGVCAircraft"
+cache_dir.mkdir(parents=True, exist_ok=True)
+datasets.FGVCAircraft(root = str(cache_dir), download=True)
+#ROOT = 'c:\\Users\\chihp\\UMich\\SIADS\\699\\FGVC\\fgvc-aircraft-2013b\\data'
+ROOT = cache_dir / "fgvc-aircraft-2013b" / "data"
+
 class FGVCAircraftDataset(Dataset):
     """
     A customised Fine Grained Visual Categorization Aircraft Dataset for manufacturer / family / variant annotation labels 
