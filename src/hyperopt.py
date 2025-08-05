@@ -1,3 +1,69 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import copy
+import math
+import plotly.express as px
+import plotly.graph_objects as go
+import plotly.figure_factory as ff
+import plotly.subplots as sub
+import dash
+from dash import dcc, html, Output, Input, State
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, precision_recall_fscore_support, confusion_matrix, top_k_accuracy_score
+from sklearn.model_selection import StratifiedKFold
+import optuna
+from optuna.trial import TrialState
+#from optuna.integration import PyTorchIgnitePruningHandler
+
+from functools import partial
+import random
+import os
+import itertools
+from PIL import Image
+from tqdm.auto import tqdm
+
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
+
+import torch
+import torchvision
+import torch.optim as optim
+from torch import nn
+import torch.nn.functional as F
+from torch.utils.data import DataLoader, Dataset, TensorDataset, Subset
+from torchvision.models import vgg16_bn, resnet50, resnet18, efficientnet_b0, densenet121, ResNet50_Weights, ResNet18_Weights, VGG16_BN_Weights, DenseNet121_Weights, EfficientNet_B0_Weights
+from torchvision.utils import make_grid, draw_bounding_boxes, draw_segmentation_masks, draw_keypoints
+from torchvision import datasets
+from torchvision.transforms import ToTensor, v2, ToPILImage
+from torchvision.io import decode_image
+
+# from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
+# from ignite.metrics import Accuracy, Loss, RunningAverage, ConfusionMatrix
+# from ignite.handlers import ModelCheckpoint, EarlyStopping
+
+from pathlib import Path
+from torch.utils.tensorboard import SummaryWriter
+from torch.amp import GradScaler, autocast
+
+from transformers import ViTForImageClassification, ViTImageProcessor, AutoModelForImageClassification, AutoImageProcessor, Trainer, TrainingArguments
+from huggingface_hub import snapshot_download, hf_hub_download
+import socket
+import json
+import sys
+import io
+import base64
+
+# Add project_root/ to sys.path
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) for python executable
+# Determine project_root as the parent of the current working directory
+project_root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+
+# Add project_root to sys.path
+sys.path.insert(0, project_root)
+from data_utils import FGVCAircraftDataset, get_datasets, get_loaders, get_raw
+from models import CAPResNet, SEEffNet, LabelSmoothingCrossEntropy, FocalLoss
+from aircraft_utils import train_one_epoch, evaluate, visualize_predictions
 
 
 # Model selector

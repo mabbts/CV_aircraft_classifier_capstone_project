@@ -68,6 +68,8 @@ datasets.FGVCAircraft(root = str(cache_dir), download=True)
 #ROOT = 'c:\\Users\\chihp\\UMich\\SIADS\\699\\FGVC\\fgvc-aircraft-2013b\\data'
 ROOT = cache_dir / "fgvc-aircraft-2013b" / "data"
 
+# Check if GPU is available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # For evaluation of valid set
 def top_k_accuracy(output, target, k=5):
@@ -220,6 +222,8 @@ def unnormalize(img_tensor, mean, std):
 def visualize_predictions(model, test_dataset, num_samples=10, normalized=True):
     model.eval()
     samples = random.sample(range(len(test_dataset)), num_samples)
+    # Check if GPU is available
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # Dynamically calculate rows and columns
     cols = 5
     rows = math.ceil(num_samples / cols)
