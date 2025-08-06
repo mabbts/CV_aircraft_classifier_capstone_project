@@ -54,6 +54,9 @@ import sys
 import io
 import base64
 
+# Check if GPU is available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def get_raw():
     # # Starting from chocp/, go up two levels to parent_dir/
     # parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))

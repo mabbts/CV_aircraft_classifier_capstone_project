@@ -54,6 +54,9 @@ import sys
 import io
 import base64
 
+# Check if GPU is available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 # Simple CNN Backbone
 class SimpleCNN(nn.Module):
     def __init__(self, num_classes=30, attention_module=None):#, p_conv = 0.2, p_fc = 0.5

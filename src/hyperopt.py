@@ -54,13 +54,8 @@ import sys
 import io
 import base64
 
-# Add project_root/ to sys.path
-#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) for python executable
-# Determine project_root as the parent of the current working directory
-project_root = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Add project_root to sys.path
-sys.path.insert(0, project_root)
 from data_utils import FGVCAircraftDataset, get_datasets, get_loaders, get_raw
 from models import CAPResNet, SEEffNet, LabelSmoothingCrossEntropy, FocalLoss
 from aircraft_utils import train_one_epoch, evaluate, visualize_predictions
@@ -124,7 +119,7 @@ def objective(trial):
     patience = 5
     epochs_without_improvement = 0
     num_epochs = 20
-    for epoch in range(num_epochs):
+    for epoch in range(num_epochs):        
         train_loss, train_acc, _, _ = train_one_epoch(model, train_loader, criterion, optimizer, device, scaler)
         val_loss, val_acc, _, _, _, _ = evaluate(model, val_loader, criterion, device)
 
