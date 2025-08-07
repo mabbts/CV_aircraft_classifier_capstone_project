@@ -71,7 +71,7 @@ Below is a high-level overview of the repository layout:
 ├── models/                    # Saved PyTorch models (.pth)
 │   └── best_model_xxx.pth
 │
-├── docs/                   # Generated outputs (HTML, PNG, etc.)
+├── docs/                   # Generated outputs (HTML, PNG, etc.)   [Click here to open interactive htmls] ( https://mabbts.github.io/CV_aircraft_classifier_capstone_project/ )
 │   ├── xxx.png
 │   │   
 │   └── interactive_xxx.html
@@ -101,7 +101,7 @@ Below is a high-level overview of the repository layout:
 
 ### Flight Classification
 
-The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `Jupyter Notebook/Base.ipynb`.
+The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`.
 
 ---
 
