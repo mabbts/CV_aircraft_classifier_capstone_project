@@ -1,112 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Aircraft Hierarchy Radial Plot</title>
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-    #vis {
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
-</head>
-<body>
-  <div id="vis"></div>
-  <script type="text/javascript">
-    const spec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "description": "Aircraft hierarchy by manufacturer, family, and variant.",
-      "data": {
-        "values": [
+  <head>
+    <meta charset="utf-8" />
+    <title>Aircraft Hierarchy Radial Plot</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+      }
+      h1 {
+        text-align: center;
+      }
+      #vis {
+        width: 100%;
+        height: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Aircraft Hierarchy Radial Plot</h1>
+    <p style="text-align:center;">
+      This chart shows the hierarchical distribution of aircraft by manufacturer, family, and variant.
+      Each segment's size reflects the number of aircraft variants within each group.
+      Hover over the arcs to see details.
+    </p>
+    <div id="vis"></div>
+    <script type="text/javascript">
+      const spec = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "width": 500,
+        "height": 500,
+        "padding": 5,
+        "data": {
+          "values": [
+            {"id": "Aircraft", "parent": ""},
+            {"id": "Boeing", "parent": "Aircraft"},
+            {"id": "737", "parent": "Boeing"},
+            {"id": "737-800", "parent": "737"},
+            {"id": "737-900", "parent": "737"},
+            {"id": "747", "parent": "Boeing"},
+            {"id": "747-400", "parent": "747"},
+            {"id": "747-8", "parent": "747"},
+            {"id": "Airbus", "parent": "Aircraft"},
+            {"id": "A320", "parent": "Airbus"},
+            {"id": "A320-200", "parent": "A320"},
+            {"id": "A321", "parent": "Airbus"},
+            {"id": "A321neo", "parent": "A321"}
+          ]
+        },
+        "transform": [
           {
-            "name": "Aircraft",
-            "children": [
-              {
-                "name": "Boeing",
-                "children": [
-                  {
-                    "name": "737",
-                    "children": [
-                      {"name": "737-700", "size": 1},
-                      {"name": "737-800", "size": 1},
-                      {"name": "737 MAX", "size": 1}
-                    ]
-                  },
-                  {
-                    "name": "777",
-                    "children": [
-                      {"name": "777-200", "size": 1},
-                      {"name": "777-300", "size": 1}
-                    ]
-                  }
-                ]
-              },
-              {
-                "name": "Airbus",
-                "children": [
-                  {
-                    "name": "A320",
-                    "children": [
-                      {"name": "A320ceo", "size": 1},
-                      {"name": "A320neo", "size": 1}
-                    ]
-                  },
-                  {
-                    "name": "A350",
-                    "children": [
-                      {"name": "A350-900", "size": 1},
-                      {"name": "A350-1000", "size": 1}
-                    ]
-                  }
-                ]
-              }
-            ]
+            "stratify": {
+              "key": "id",
+              "parentKey": "parent"
+            }
+          },
+          {
+            "window": [{"op": "count", "as": "size"}],
+            "frame": [null, null]
+          },
+          {
+            "aggregate": [{"op": "count", "as": "size"}],
+            "groupby": ["parent"]
           }
-        ]
-      },
-      "mark": "arc",
-      "encoding": {
-        "theta": {"field": "x", "type": "quantitative", "stack": true},
-        "radius": {"field": "depth", "type": "ordinal"},
-        "color": {"field": "name", "type": "nominal"},
-        "tooltip": {"field": "name"}
-      },
-      "transform": [
-        {
-          "flatten": ["children"]
-        },
-        {
-          "window": [{"op": "rank", "as": "x"}]
-        },
-        {
-          "calculate": "1", "as": "depth"
+        ],
+        "mark": {"type": "arc", "outerRadius": 200},
+        "encoding": {
+          "theta": {"field": "size", "type": "quantitative"},
+          "color": {"field": "id", "type": "nominal"},
+          "tooltip": [{"field": "id"}, {"field": "parent"}, {"field": "size"}]
         }
-      ],
-      "view": {"stroke": null},
-      "width": "container",
-      "height": "container"
-    };
+      };
 
-    const embedOpt = { mode: "vega-lite", actions: false };
+      var embedOpt = { mode: "vega-lite", actions: false };
 
-    vegaEmbed("#vis", spec, embedOpt).catch(error => {
-      const el = document.getElementById("vis");
-      el.innerHTML = `
-        <div style="color:red; padding:1em;">
-          <h3>JavaScript Error: ${error.message}</h3>
-          <p>This usually means there's a typo in your chart specification.</p>
-          <pre>${error.stack}</pre>
-        </div>
-      `;
-      throw error;
-    });
-  </script>
-</body>
+      function showError(el, error) {
+        el.innerHTML = '<div style="color:red;"><strong>JavaScript Error: </strong>' + error.message + '</div>';
+        throw error;
+      }
+
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt).catch(error => showError(el, error));
+    </script>
+  </body>
 </html>
