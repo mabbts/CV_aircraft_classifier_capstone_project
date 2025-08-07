@@ -54,107 +54,16 @@ import sys
 import io
 import base64
 
-# # Starting from chocp/, go up two levels to parent_dir/
-# parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from data_utils import FGVCAircraftDataset, get_datasets, get_loaders, get_raw
+import aircraft_utils, models
 
-# # Prepend to sys.path so Python can find src/
-# if parent_dir not in sys.path:
-#     sys.path.insert(0, parent_dir)
 
-# from src.chocp_dataset import FGVCAircraftDataset
-cache_dir = Path.home() / "Capstone" / "FGVCAircraft"
-cache_dir.mkdir(parents=True, exist_ok=True)
-datasets.FGVCAircraft(root = str(cache_dir), download=True)
-#ROOT = 'c:\\Users\\chihp\\UMich\\SIADS\\699\\FGVC\\fgvc-aircraft-2013b\\data'
-ROOT = cache_dir / "fgvc-aircraft-2013b" / "data"
-
+ROOT = get_raw()
 # Check if GPU is available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-class FGVCAircraftDataset(Dataset):
-    """
-    A customised Fine Grained Visual Categorization Aircraft Dataset for manufacturer / family / variant annotation labels 
-    similar to torchvision.datasets.FGVCAircraft dataset.
-    
-    Args:
-        root_dir (str): path to  'fgvc-aircraft-2013b/data' folder
-        split   (str): one of 'train', 'trainval', 'val' or 'test' 
-        level   (str): one of 'manufacturer', 'family', or 'variant'.
-        transform (callable, optional): a torchvision.transforms pipeline or Albumentation pipeline to apply to the images.
-        return_label_str (bool): if True, __getitem__ returns (img, label_str) instead of (img, label_idx).
-        use_cropped (bool): if True, __getitem__ returns cropped images using bounding box coordinates.
-    """
-    ALLOWED = {"manufacturer", "family", "variant"}
-    
-    def __init__(self, root= ROOT, split = "train", level = "manufacturer",
-                 transform = None, return_class = False, cropped = False, album = False):
-        assert level in self.ALLOWED, f"level must be one of {self.ALLOWED}"
-        self.root = root
-        self.split    = split
-        self.level    = level
-        self.transform = transform
-        self.return_class = return_class
-        self.cropped = cropped
-        self.album = album
 
-        # 1) read lines from images_{level}_{split}.txt
-        class_file = os.path.join(root,
-                                  f"images_{level}_{split}.txt")
-        if not os.path.isfile(class_file):
-            raise FileNotFoundError(f"{class_file} not found")
-
-        samples = []
-        with open(class_file, "r") as f:
-            for ln in f:
-                parts = ln.strip().split()
-                img_id, *label_parts = parts
-                class_str = " ".join(label_parts)
-                samples.append((img_id, class_str))
-        self.samples = samples
-
-        # 2) build label→idx map
-        self.classes = sorted({lbl for _, lbl in samples})
-        self.class_to_idx = {lbl: i for i, lbl in enumerate(self.classes)}
-        self.idx_to_class = {i: lbl for lbl, i in self.class_to_idx.items()}
-
-        # 3) read bounding box coordinates from bounding_boxes_{split}.txt
-        bbox_file = os.path.join(root, "images_box.txt")
-        if not os.path.isfile(bbox_file):
-            raise FileNotFoundError(f"{bbox_file} not found")
-
-        self.bboxes = {}
-        with open(bbox_file, "r") as f:
-            for ln in f:
-                parts = ln.strip().split()
-                img_id = parts[0]
-                bbox = tuple(map(int, parts[1:]))
-                self.bboxes[img_id] = bbox
-
-    def __len__(self):
-        return len(self.samples)
-
-    def __getitem__(self, idx):
-        img_id, class_str = self.samples[idx]
-        img_path = os.path.join(self.root, "images", f"{img_id}.jpg")
-        img = Image.open(img_path).convert("RGB")
-        img_np = np.array(img)
-
-        if self.cropped:
-            xmin, ymin, xmax, ymax = self.bboxes[img_id]
-            img = img.crop((xmin, ymin, xmax, ymax))
-
-        if self.transform:
-            if not self.album:
-                img = self.transform(img) #pytorch transoform
-            else:
-                aug = self.transform(image = img_np)
-                img = aug['image'] # albumentations
-
-        if self.return_class:
-            return img, class_str
-
-        class_idx = self.class_to_idx[class_str]
-        return img, class_idx
 
 
 # from your_module import get_loaders, get_datasets, CAPResNet, train_one_epoch, evaluate, visualize_predictions, FGVCAircraftDataset
@@ -214,7 +123,8 @@ app.layout = html.Div([
         dcc.Dropdown(id='class-dropdown'),
         html.Div(id='image-output', style={'display': 'flex', 'flexWrap': 'wrap'})
     ]),
-    dcc.Store(id='model-meta-store')
+    #dcc.Store(id='model-meta-store')
+    dcc.Store(id='model-meta-store', data={})
 ])
 @app.callback(
     Output('train-controls', 'style'),
@@ -241,21 +151,22 @@ def toggle_controls(mode):
 def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
     if n_clicks > 0:
         train_loader, val_loader, test_loader, num_classes, class_names = get_loaders(img_size=img_size, batch_size=batch_size, annot=annot)
-        model = CAPResNet(num_classes, drop=0.3563).to('cuda' if torch.cuda.is_available() else 'cpu')
+        model = models.CAPResNet(num_classes, drop=0.3563).to(device)
         criterion = nn.CrossEntropyLoss(label_smoothing=0.046858)
         optimizer = optim.Adam(model.parameters(), lr=5.1872e-05, weight_decay=0.002925)
         scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5)
         scaler = GradScaler('cuda')
         best_val_loss = float('inf')
         epochs_without_improvement = 0
+        model_path = os.path.join(os.pardir, "models", "best_model_dash.pth")
         for epoch in range(num_epochs):
-            train_loss, train_acc, _, _ = train_one_epoch(model, train_loader, criterion, optimizer, 'cuda', scaler)
-            val_loss, val_acc, _, _, _, _ = evaluate(model, val_loader, criterion, 'cuda')
+            train_loss, train_acc, _, _ = aircraft_utils.train_one_epoch(model, train_loader, criterion, optimizer, 'cuda', scaler)
+            val_loss, val_acc, _, _, _, _ = aircraft_utils.evaluate(model, val_loader, criterion, 'cuda')
             scheduler.step(val_loss)
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
                 epochs_without_improvement = 0
-                torch.save(model.state_dict(), 'best_model_dash.pth')
+                torch.save(model.state_dict(), model_path)
             else:
                 epochs_without_improvement += 1
             if epochs_without_improvement >= patience:
@@ -273,24 +184,55 @@ def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
     State('num-samples', 'value'),
     State('model-meta-store', 'data')
 )
+# def run_prediction(n_clicks, mode, level, num_samples, model_meta):
+#     if n_clicks > 0 and level:
+#         try:
+#             if mode == 'pretrain':
+#                 model_path = os.path.join(os.pardir, "models", f"best_model_{level}.pth")
+#                 _, _, test_loader, num_classes, class_names = get_loaders(img_size=224, batch_size=16, annot=level)
+#             else:
+#                 num_classes = model_meta.get('num_classes')
+#                 class_names = model_meta.get('class_names')
+#                 if num_classes is None:
+#                     raise ValueError("Model metadata missing. Please run training first.")
+#                 model_path = os.path.join(os.pardir, "models", "best_model_dash.pth")
+#             model = models.CAPResNet(num_classes, drop=0.3563).to(device)
+#             model.load_state_dict(torch.load(model_path))
+#             model.eval()
+#             test_dataset = get_datasets(224, 16, level)[2]
+#             buf = io.BytesIO()
+#             aircraft_utils.visualize_predictions(model, test_dataset, num_samples=num_samples)
+#             plt.savefig(buf, format='png')
+#             plt.close()
+#             buf.seek(0)
+#             encoded = base64.b64encode(buf.read()).decode('utf-8')
+#             img_src = f'data:image/png;base64,{encoded}'
+#             return html.Img(src=img_src, style={'width': '100%', 'marginTop': '20px'})
+#         except Exception as e:
+#             return html.Div(f"Error running prediction: {str(e)}", style={'color': 'red'})
+#     return ""
+
+
 def run_prediction(n_clicks, mode, level, num_samples, model_meta):
     if n_clicks > 0 and level:
         try:
             if mode == 'pretrain':
-                model_path = f"best_model_{level}.pth"
+                model_path = os.path.join(os.pardir, "models", f"best_model_{level}.pth")
                 _, _, test_loader, num_classes, class_names = get_loaders(img_size=224, batch_size=16, annot=level)
             else:
-                num_classes = model_meta.get('num_classes')
-                class_names = model_meta.get('class_names')
-                if num_classes is None:
-                    raise ValueError("Model metadata missing. Please run training first.")
-                model_path = 'best_model_dash.pth'
-            model = CAPResNet(num_classes, drop=0.3563).to('cuda' if torch.cuda.is_available() else 'cpu')
+                if not model_meta or 'num_classes' not in model_meta or 'class_names' not in model_meta:
+                    raise ValueError("Model metadata missing. Please run training or select a pre-trained model.")
+                num_classes = model_meta['num_classes']
+                class_names = model_meta['class_names']
+                model_path = os.path.join(os.pardir, "models", "best_model_dash.pth")
+
+            model = models.CAPResNet(num_classes, drop=0.3563).to(device)
             model.load_state_dict(torch.load(model_path))
             model.eval()
+
             test_dataset = get_datasets(224, 16, level)[2]
             buf = io.BytesIO()
-            visualize_predictions(model, test_dataset, num_samples=num_samples)
+            aircraft_utils.visualize_predictions(model, test_dataset, num_samples=num_samples)
             plt.savefig(buf, format='png')
             plt.close()
             buf.seek(0)
@@ -300,6 +242,7 @@ def run_prediction(n_clicks, mode, level, num_samples, model_meta):
         except Exception as e:
             return html.Div(f"Error running prediction: {str(e)}", style={'color': 'red'})
     return ""
+
 @app.callback(
     Output('load-status', 'children'),
     Output('level-dropdown', 'value'),

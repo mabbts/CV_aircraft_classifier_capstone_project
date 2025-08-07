@@ -64,8 +64,28 @@ The data pipeline provides a structured framework for retrieving and processing 
 Below is a high-level overview of the repository layout:
 <!-- TREE START -->
 ```text
-├── README.md
-├── .git
+├── README.md                  # Project overview, setup instructions, usage
+├── requirements.txt           # Python dependencies
+├── .gitignore                 # Ignore model files, outputs, etc.
+│
+├── models/                    # Saved PyTorch models (.pth)
+│   └── best_model_xxx.pth
+│
+├── docs/                   # Generated outputs (HTML, PNG, etc.)
+│   ├── xxx.png
+│   │   
+│   └── interactive_xxx.html
+│      
+│
+├── src/                       # Source code (modular Python scripts)
+│   ├── data_utils.py
+│   ├── models.py
+│   └── aircraft_utils.py
+│   └── hyperopt.py
+│
+└── apps/                     # Final dashboard
+    └── dashboard.py
+
 ```
 ---
 
