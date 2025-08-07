@@ -71,7 +71,7 @@ Below is a high-level overview of the repository layout:
 ├── models/                    # Saved PyTorch models (.pth)
 │   └── best_model_xxx.pth
 │
-├── docs/                   # Generated outputs (HTML, PNG, etc.)   [Click here to open interactive htmls] ( https://mabbts.github.io/CV_aircraft_classifier_capstone_project/ )
+├── docs/                   # Generated outputs (HTML, PNG, etc.)
 │   ├── xxx.png
 │   │   
 │   └── interactive_xxx.html
@@ -88,6 +88,9 @@ Below is a high-level overview of the repository layout:
 
 ```
 ---
+## Interactive .html Link to Visualization
+[Click to Open]( https://mabbts.github.io/CV_aircraft_classifier_capstone_project/)
+
 
 ## Example Usage
 
