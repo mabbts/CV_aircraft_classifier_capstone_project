@@ -23,6 +23,29 @@ This project is a comprehensive system for retrieving, processing, analyzing, an
 
 ---
 
+## Setting up Virtual Environment
+We provided a requirements.txt to create an environment where all the code in this repo functions properly.
+
+# 1. Optional: create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+
+# 2. Install requirements
+pip install -r requirements.txt
+
+# Activate GPU support on PC:
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Activate GPU support on Mac M-series chips: 
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+
+
+---
+
+
+
 ## Project Overview
 
 
