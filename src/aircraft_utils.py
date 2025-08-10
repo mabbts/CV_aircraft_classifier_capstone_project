@@ -253,3 +253,23 @@ def visualize_predictions(model, test_dataset, num_samples=10, normalized=True):
 
     plt.tight_layout()
     plt.show()
+
+def visualize_predictions_plotly(model, dataset, class_name, num_samples=5):
+    model.eval()
+    fig = sub.make_subplots(rows=1, cols=num_samples)
+    for i in range(num_samples):
+        img, label = dataset[i]
+        with torch.no_grad():
+            output = model(img.unsqueeze(0).to(device))
+            probs = torch.nn.functional.softmax(output, dim=1)
+            pred = torch.argmax(probs, dim=1).item()
+            confidence = probs[0][pred].item()
+        img_np = img.permute(1, 2, 0).cpu().numpy()
+        fig.add_trace(
+            go.Image(z=img_np),
+            row=1, col=i+1
+        )
+        fig.update_xaxes(showticklabels=False, row=1, col=i+1)
+        fig.update_yaxes(showticklabels=False, row=1, col=i+1)
+        fig.layout.annotations[i].text = f"{class_name[pred]}<br>({confidence:.2%})"
+    return fig
