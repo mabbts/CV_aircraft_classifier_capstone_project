@@ -274,71 +274,153 @@ def visualize_predictions(model, test_dataset, num_samples=10, normalized=True):
 #         fig.layout.annotations[i].text = f"{class_name[pred]}<br>({confidence:.2%})"
 #     return fig
 
-def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized=True):
+# def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized=True):
+#     """
+#     Returns a plotly.graph_objects.Figure that can be fed directly into dcc.Graph.
+#     """
+#     model.eval()
+#     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#     samples = random.sample(range(len(test_dataset)), num_samples)
+
+#     # Grid layout
+#     cols = min(5, num_samples)
+#     rows = math.ceil(num_samples / cols)
+#     fig = sub.make_subplots(rows=rows, cols=cols)
+
+#     inv_label_map = test_dataset.idx_to_class
+#     mean = [0.485, 0.456, 0.406]
+#     std = [0.229, 0.224, 0.225]
+
+#     with torch.no_grad():
+#         for idx, sample_idx in enumerate(samples):
+#             r = idx // cols + 1
+#             c = idx % cols + 1
+
+#             image, label = test_dataset[sample_idx]
+#             input_img = image.unsqueeze(0).to(device)
+#             output = model(input_img)
+#             _, pred = torch.max(output, 1)
+
+#             if normalized:
+#                 image = unnormalize(image.clone(), mean, std)
+
+#             #img_disp = image.permute(1, 2, 0).cpu().numpy().clip(0, 1)
+#             img_disp = (image.permute(1, 2, 0)
+#                   .cpu()
+#                   .numpy()
+#                   .clip(0, 1) * 255).astype(np.uint8)
+
+#             # Add image to subplot
+#             fig.add_trace(
+#                 go.Image(z=img_disp),
+#                 row=r, col=c
+#             )
+
+#             # Hide axes
+#             fig.update_xaxes(showticklabels=False, row=r, col=c)
+#             fig.update_yaxes(showticklabels=False, row=r, col=c)
+
+#             # Add annotation for prediction/actual
+#             fig.add_annotation(
+#                 text=f"Pred: {inv_label_map[pred.item()]}<br>Actual: {inv_label_map[label]}",
+#                 # xref=f"x{idx+1} domain",
+#                 # yref=f"y{idx+1} domain",
+#                 # xref="x domain", 
+#                 # yref="y domain",
+#                 xref="x domain" if idx == 0 else f"x{idx+1} domain", 
+#                 yref="y domain" if idx == 0 else f"y{idx+1} domain",
+#                 x=0.5, y=-0.15,
+#                 showarrow=False,
+#                 font=dict(size=10),
+#                 row=r, col=c
+#             )
+
+#     fig.update_layout(
+#         margin=dict(l=0, r=0, t=30, b=0),
+#         height=rows * 250,
+#         width=cols * 250
+#     )
+
+#     return fig
+
+def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized=True, cols=5):
     """
-    Returns a plotly.graph_objects.Figure that can be fed directly into dcc.Graph.
+    Returns a plotly.graph_objects.Figure to feed into dcc.Graph.
+    - Labels are drawn INSIDE each subplot to avoid clipping on the last row.
+    - Values converted to uint8 to prevent dark/black images.
     """
     model.eval()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    samples = random.sample(range(len(test_dataset)), num_samples)
 
-    # Grid layout
-    cols = min(5, num_samples)
-    rows = math.ceil(num_samples / cols)
-    fig = sub.make_subplots(rows=rows, cols=cols)
+    k = min(num_samples, len(test_dataset))
+    cols = max(1, min(cols, k))
+    rows = math.ceil(k / cols)
+    fig = sub.make_subplots(rows=rows, cols=cols, vertical_spacing=0.06, horizontal_spacing=0.03)
 
-    inv_label_map = test_dataset.idx_to_class
+    inv_label_map = getattr(test_dataset, "idx_to_class", None)
     mean = [0.485, 0.456, 0.406]
-    std = [0.229, 0.224, 0.225]
+    std  = [0.229, 0.224, 0.225]
+
+    indices = random.sample(range(len(test_dataset)), k)
 
     with torch.no_grad():
-        for idx, sample_idx in enumerate(samples):
+        for idx, sample_idx in enumerate(indices):
             r = idx // cols + 1
             c = idx % cols + 1
 
             image, label = test_dataset[sample_idx]
-            input_img = image.unsqueeze(0).to(device)
-            output = model(input_img)
-            _, pred = torch.max(output, 1)
+            logits = model(image.unsqueeze(0).to(device))
+            pred = torch.argmax(logits, dim=1).item()
 
+            # Unnormalize and convert to uint8 for Plotly
+            img = image.clone()
             if normalized:
-                image = unnormalize(image.clone(), mean, std)
+                img = unnormalize(img, mean, std)
+            img_disp = (img.permute(1, 2, 0).cpu().numpy().clip(0, 1) * 255).astype(np.uint8)
 
-            #img_disp = image.permute(1, 2, 0).cpu().numpy().clip(0, 1)
-            img_disp = (image.permute(1, 2, 0)
-                  .cpu()
-                  .numpy()
-                  .clip(0, 1) * 255).astype(np.uint8)
-
-            # Add image to subplot
-            fig.add_trace(
-                go.Image(z=img_disp),
-                row=r, col=c
-            )
+            fig.add_trace(go.Image(z=img_disp), row=r, col=c)
 
             # Hide axes
             fig.update_xaxes(showticklabels=False, row=r, col=c)
             fig.update_yaxes(showticklabels=False, row=r, col=c)
 
-            # Add annotation for prediction/actual
+            # Build label text
+            if inv_label_map is not None:
+                pred_text = inv_label_map[pred]
+                actual_text = inv_label_map[label]
+            else:
+                pred_text = str(pred)
+                actual_text = str(label)
+
+            # Draw label INSIDE the subplot (top-center) to avoid clipping
             fig.add_annotation(
-                text=f"Pred: {inv_label_map[pred.item()]}<br>Actual: {inv_label_map[label]}",
-                # xref=f"x{idx+1} domain",
-                # yref=f"y{idx+1} domain",
-                # xref="x domain", 
-                # yref="y domain",
-                xref="x domain" if idx == 0 else f"x{idx+1} domain", 
-                yref="y domain" if idx == 0 else f"y{idx+1} domain",
-                x=0.5, y=-0.15,
+                text=f"Pred: {pred_text}<br>Actual: {actual_text}",
+                x=0.5, y=0.98,
+                xref="x domain", yref="y domain",
+                xanchor="center", yanchor="top",
                 showarrow=False,
-                font=dict(size=10),
+                align="center",
+                font=dict(size=11, color="white"),
+                bgcolor="rgba(0,0,0,0.55)",
+                bordercolor="rgba(0,0,0,0)",
                 row=r, col=c
             )
 
+    # Fill any empty cells (if k < rows*cols) with blank frames to keep layout stable
+    total_cells = rows * cols
+    for idx in range(k, total_cells):
+        r = idx // cols + 1
+        c = idx % cols + 1
+        fig.add_trace(go.Image(z=np.zeros((10, 10, 3), dtype=np.uint8)), row=r, col=c)  # tiny blank tile
+        fig.update_xaxes(showticklabels=False, row=r, col=c)
+        fig.update_yaxes(showticklabels=False, row=r, col=c)
+
     fig.update_layout(
-        margin=dict(l=0, r=0, t=30, b=0),
-        height=rows * 250,
-        width=cols * 250
+        margin=dict(l=10, r=10, t=30, b=10),
+        height=max(250, rows * 250),
+        width=max(250, cols * 250),
+        paper_bgcolor="white",
+        plot_bgcolor="white"
     )
 
     return fig

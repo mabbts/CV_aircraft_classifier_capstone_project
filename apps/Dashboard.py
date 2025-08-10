@@ -48,6 +48,8 @@ import json
 import sys
 import io
 import base64
+import webbrowser
+from threading import Timer
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 
@@ -313,7 +315,12 @@ def find_free_port():
     s.bind(('', 0))
     return s.getsockname()[1]
 
+def open_browser():
+    webbrowser.open_new(f"http://127.0.0.1:{port}/")
+
 port = find_free_port()   
 
 if __name__ == '__main__':
+    # Launch browser a second after server starts
+    Timer(1, open_browser).start()
     app.run(debug=True, port=port)
