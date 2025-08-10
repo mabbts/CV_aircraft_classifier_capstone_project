@@ -240,13 +240,14 @@ def run_prediction(n_clicks, mode, level, num_samples, model_meta):
 
             test_dataset = get_datasets(224, 16, level)[2]
             #buf = io.BytesIO()
-            img_src=aircraft_utils.visualize_predictions_plotly(model, test_dataset, class_name = class_names, num_samples=num_samples)#
+            fig=aircraft_utils.visualize_predictions_plotly(model, test_dataset, class_name = class_names, num_samples=num_samples)#
             #plt.savefig(buf, format='png')
             #plt.close()
             #buf.seek(0)
             #encoded = base64.b64encode(buf.read()).decode('utf-8')
             #img_src = f'data:image/png;base64,{encoded}'
-            return html.Img(src=img_src, style={'width': '100%', 'marginTop': '20px'})
+            #return html.Img(src=img_src, style={'width': '100%', 'marginTop': '20px'})
+            return dcc.Graph(figure=fig, style={'width': '100%', 'marginTop': '20px'})
         except Exception as e:
             return html.Div(f"Error running prediction: {str(e)}", style={'color': 'red'})
     return ""
