@@ -96,14 +96,17 @@ Below is a high-level overview of the repository layout:
 │
 ├── docs/                   # Generated outputs (HTML, PNG, etc.)
 │   ├── xxx.png
-│   │   
 │   └── interactive_xxx.html
-│      
+│
+├── notebooks/                       # Notebooks (jupyter notebook scripts)
+│   ├── Base.ipynb             # Main notebook 
+│   ├── Viz.ipynb              # Hierarchical visualization of our datasets
+│   └── hyperopt_optuna.ipynb  # hyper-parameter searching scripts
 │
 ├── src/                       # Source code (modular Python scripts)
 │   ├── data_utils.py
 │   ├── models.py
-│   └── aircraft_utils.py
+│   ├── aircraft_utils.py
 │   └── hyperopt.py
 │
 └── apps/                     # Final dashboard
@@ -116,6 +119,16 @@ Below is a high-level overview of the repository layout:
 
 
 ## Example Usage
+
+Clone the repo
+
+git clone https://github.com/mabbts/CV_aircraft_classifier_capstone_project.git
+
+cd CV_aircraft_classifier_capstone_project
+
+Run the script
+
+python dashboard.py
 
 ### Data Pipeline
 

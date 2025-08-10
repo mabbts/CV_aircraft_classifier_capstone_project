@@ -304,7 +304,11 @@ def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized
             if normalized:
                 image = unnormalize(image.clone(), mean, std)
 
-            img_disp = image.permute(1, 2, 0).cpu().numpy().clip(0, 1)
+            #img_disp = image.permute(1, 2, 0).cpu().numpy().clip(0, 1)
+            img_disp = (image.permute(1, 2, 0)
+                  .cpu()
+                  .numpy()
+                  .clip(0, 1) * 255).astype(np.uint8)
 
             # Add image to subplot
             fig.add_trace(
@@ -321,8 +325,10 @@ def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized
                 text=f"Pred: {inv_label_map[pred.item()]}<br>Actual: {inv_label_map[label]}",
                 # xref=f"x{idx+1} domain",
                 # yref=f"y{idx+1} domain",
-                xref="x domain", 
-                yref="y domain",
+                # xref="x domain", 
+                # yref="y domain",
+                xref="x domain" if idx == 0 else f"x{idx+1} domain", 
+                yref="y domain" if idx == 0 else f"y{idx+1} domain",
                 x=0.5, y=-0.15,
                 showarrow=False,
                 font=dict(size=10),
