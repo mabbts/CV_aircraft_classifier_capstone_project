@@ -319,8 +319,10 @@ def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized
             # Add annotation for prediction/actual
             fig.add_annotation(
                 text=f"Pred: {inv_label_map[pred.item()]}<br>Actual: {inv_label_map[label]}",
-                xref=f"x{idx+1} domain",
-                yref=f"y{idx+1} domain",
+                # xref=f"x{idx+1} domain",
+                # yref=f"y{idx+1} domain",
+                xref="x domain", 
+                yref="y domain",
                 x=0.5, y=-0.15,
                 showarrow=False,
                 font=dict(size=10),
