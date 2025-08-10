@@ -110,7 +110,7 @@ Below is a high-level overview of the repository layout:
 │   └── hyperopt.py
 │
 └── apps/                     # Final dashboard
-    └── dashboard.py
+    └── Dashboard.py
 
 ```
 ---
@@ -128,7 +128,7 @@ cd CV_aircraft_classifier_capstone_project
 
 Run the script
 
-python dashboard.py
+python Dashboard.py
 
 ### Data Pipeline
 
