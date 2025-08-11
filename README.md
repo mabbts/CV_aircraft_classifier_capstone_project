@@ -180,6 +180,11 @@ To run the final dashboard `apps/Dashboard.py`
 ```
 python Dashboard.py
 ```
+And you should be able to see the dashboard such like:
+
+![Dashboard-sample](docs/dashboard.PNG)
+
+
 
 ---
 
