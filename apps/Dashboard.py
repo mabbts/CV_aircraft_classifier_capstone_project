@@ -167,6 +167,8 @@ def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
         scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5)
         scaler = GradScaler('cuda')
         best_val_loss = float('inf')
+        best_val_acc = 0.0
+        best_epoch = -1
         epochs_without_improvement = 0
         model_path = os.path.join(os.pardir, "models", "best_model_dash.pth")
         for epoch in range(num_epochs):
@@ -175,6 +177,8 @@ def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
             scheduler.step(val_loss)
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
+                best_val_acc = val_acc  # <-- store accuracy at best val loss
+                best_epoch = epoch      # <-- store the epoch number
                 epochs_without_improvement = 0
                 torch.save(model.state_dict(), model_path)
             else:
@@ -182,7 +186,8 @@ def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
             if epochs_without_improvement >= patience:
                 break
         return (
-            f"Training for {num_epochs} epochs completed. Best model with {num_classes} classes at {annot} level saved as best_model_dash.pth with val loss {best_val_loss:.4f}",
+            f"Training for {num_epochs} epochs completed. Best model with {num_classes} classes at {annot} level saved as best_model_dash.pth"
+            f"with val loss {best_val_loss:.2f}", accuracy {best_val_acc:.2f} at epoch {best_epoch}.",
             {'num_classes': num_classes, 'class_names': class_names}
         )
     return "", {}
