@@ -1,5 +1,11 @@
-# Project Look! Up into the sky
+# Capstone Project Team One
 ![Look-up-in-the-sky](docs/aircraft_banner.png)
+
+
+
+
+
+
 
 .___  __ /\                        .__                      ._.
 |   |/  |)/ ______ _____    ______ |  | _____    ____   ____| |
@@ -64,7 +70,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 ### Data Pipeline (src)
 
-The data pipeline provides a structured framework for retrieving and processing flight data from the OpenSky Network.
+The data pipeline provides a structured framework for retrieving and processing flight data.
 
 #### Key Features:
 
@@ -102,11 +108,11 @@ Below is a high-level overview of the repository layout:
 ├── models/                    # Saved PyTorch models (.pth)
 │   └── best_model_xxx.pth
 │
-├── docs/                   # Generated outputs (HTML, PNG, etc.)
+├── docs/                      # Generated outputs (HTML, PNG, etc.)
 │   ├── xxx.png
 │   └── interactive_xxx.html
 │
-├── notebooks/                       # Notebooks (jupyter notebook scripts)
+├── notebooks/                   # Notebooks (jupyter notebook scripts)
 │   ├── Base.ipynb             # Main notebook 
 │   ├── Viz.ipynb              # Hierarchical visualization of our datasets
 │   └── hyperopt_optuna.ipynb  # hyper-parameter searching scripts
@@ -128,16 +134,32 @@ Below is a high-level overview of the repository layout:
 
 ## Example Usage
 
-Clone the repo
-
+1. Clone the repo:
 ```
 git clone https://github.com/mabbts/CV_aircraft_classifier_capstone_project.git
 
 cd CV_aircraft_classifier_capstone_project
 ```
-
-Run the script
-
+2. (Optional): Create and activate a virtual environment:
+```
+python -m venv venv
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+```
+3. Install requirements:
+```
+pip install -r requirements.txt
+``` 
+4. Activate GPU support on PC:
+```
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+6. Activate GPU support on Mac M-series chips:
+```
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+```
+7. Run the Dashboard:
+All notebooks and scripts assume the repository root as the working directory.
 ```
 python Dashboard.py
 ```
