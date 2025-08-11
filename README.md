@@ -165,13 +165,15 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 
 ### Model Tuning
 
+All notebooks and scripts assume the repository root as the working directory.
 
+The hyper-parameters searching is implemented through Jupyter notebooks in `notebooks/hyperopt_optuna.ipynb`. It takes more than 12 hours to execute finding multiple hyper-parameters.
 
 ### Aircraft Classification
 
 All notebooks and scripts assume the repository root as the working directory.
 
-The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`, and `notebooks/Viz.ipynb` for visualization.
+The aircraft classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`, and `notebooks/Viz.ipynb` for visualization.
 
 To run the final dashboard `apps/Dashboard.py`
 
