@@ -15,20 +15,20 @@
                \/       \/  |__|             \/     \/     \/\/
 ```
 
-# Multi-class Visual Classifier for Aircraft
+# Multi-class Fine-Grained Visual Classifier for Aircraft using Pytorch
 
-This project is a comprehensive system for retrieving, processing, analyzing, and predicting aircraft PIL images from the "FGVCAircraft". It consists of three main components:
+This project is a comprehensive system for retrieving, processing, analyzing, and predicting aircraft PIL images from the "FGVCAircraft" dataset. It consists of three main components:
 
-1. **Data Pipeline (``)**: A robust pipeline for retrieving and processing flight data
-2. **Model Trainng (``)**: Deep learning models for predicting future aircraft states
-3. **Aircraft Classification ()**: Supervised learning techniques for classifying aircraft model variants
+1. **Data Pipeline (``)**: A robust pipeline for retrieving and processing aircraft images data
+2. **Model Tuning (``)**: Applying multiple customized and pretrained models with hyper-parameter searching for the best model
+3. **Aircraft Classification ()**: Using the best model and parameters with deep learning techniques to apply classifying aircraft model variants
 
 ## Table of Contents
 - [Project Overview](#project-overview)
 - [Key Components](#key-components)
   - [Data Pipeline (src)](#data-pipeline-src)
-  - [State Prediction](#state-prediction)
-  - [Flight Classification (ENID)](#flight-classification-enid)
+  - [Model Tuning](#model-tuning)
+  - [Aircraft Classification](#aircraft-classification)
 - [Directory Structure](#directory-structure)
 - [Example Usage](#example-usage)
 - [Current Progress](#current-progress)
@@ -46,29 +46,53 @@ This project is a comprehensive system for retrieving, processing, analyzing, an
 
 ### Data Pipeline (src)
 
-The data pipeline provides a structured framework for retrieving and processing flight data.
+The data pipeline provides a structured framework for retrieving and processing aircraft images data.
 
 #### Key Features:
+  Retrieval Engine: Fetches flight data using time intervals and query functions
+  Pipeline Modules: Specialized pipelines for different data types:
+    FlightsPipeline: Retrieves flight data with metadata
+    StateVectorPipeline: Retrieves state vector data (position, velocity, etc.)
+  Query Modules: SQL query generators for different data types
+  Transformation Modules: Data preprocessing utilities
 
-
-### State Prediction
-
+### Model Tuning
+  The state prediction component uses machine learning to predict future aircraft states based on historical trajectory data.
 
 #### Models Implemented:
 
+  Transformer: Attention-based sequence model for capturing complex temporal dependencies
+  LSTM: Long Short-Term Memory network for sequential data
+  FFNN: Feed-Forward Neural Network for simpler prediction tasks
+  XGBoost: Gradient boosting for tabular data with engineered features
+  Kalman Filter: Traditional state estimation approach
+
 
 #### Key Features:
 
+  Model training and evaluation scripts
+  Hyperparameter optimization
+  Comprehensive metrics and visualization tools
+  Prediction capabilities for single flights or batches
+  Analysis tools for model performance and failure cases
 
-### Flight Classification 
 
+### Aircraft Classification 
 
+The flight classification component uses unsupervised learning techniques to identify and categorize flight patterns.
+The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`.
 
 #### Key Techniques:
 
+  Dynamic Time Warping (DTW): Algorithm for measuring similarity between temporal sequences
+  K-means Clustering: Unsupervised clustering to identify natural groupings of flight patterns
+  Prototype Matching: Comparison of flight patterns against predefined prototypes
 
 #### Features:
 
+  Support for multi-dimensional DTW to compare multiple flight attributes
+  Prototype-based classification for known flight categories
+  CNN-based classification after unsupervised labeling
 
 ---
 
@@ -110,6 +134,8 @@ Below is a high-level overview of the repository layout:
 
 ## Example Usage
 
+### Data Pipeline
+
 1. Clone the repo:
 ```
 git clone https://github.com/mabbts/CV_aircraft_classifier_capstone_project.git
@@ -140,27 +166,51 @@ All notebooks and scripts assume the repository root as the working directory.
 python Dashboard.py
 ```
 
-### Data Pipeline
+### Model Tuning
 
 
 
-### State Prediction
+### Aircraft Classification
 
+The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`
 
-
-### Flight Classification
-
-The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`.
 
 ---
 
 ## Current Progress
 
+Data Pipeline: Fully implemented and tested for both flight data and state vector data
 
+Model Turning:
+  Implemented multiple model architectures (Transformer, LSTM, XGBoost)
+  Created comprehensive evaluation framework
+  Analyzed model performance and failure cases
+  
+Aircraft Classification:
+  Implemented DTW-based similarity measurement
+  Created K-means clustering for flight pattern identification
+  Developed prototype matching for classification
+  Explored CNN-based classification after unsupervised labeling
+  
 ---
 
 ## Next Steps
 
+Data Pipeline:
+
+  Support for additional data sources
+  Real-time data streaming capabilities
+Model Tuning:
+
+  Multi-modal prediction incorporating weather data
+  Uncertainty quantification in predictions
+  Ensemble methods combining multiple model types
+  
+Aircraft Classification:
+
+  Integration of supervised learning with domain expert labels
+  Anomaly detection for unusual flight patterns
+  Real-time classification capabilities
 
 
 ---
@@ -182,7 +232,11 @@ The following resources were consulted during the development of this project:
 [IEEE Xplore](https://ieeexplore.ieee.org/document/9770072)
 
 ## Contributing
+This project is part of a course requirement, but feedback, suggestions, and ideas are welcome! Feel free to open issues or submit pull requests if you have improvements to suggest.
 
+  Issues: For bug reports or feature requests
+  
+  Pull Requests: We welcome code contributions—please be sure to include clear descriptions and testing steps
 
 
 
