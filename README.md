@@ -39,34 +39,39 @@ This project is a comprehensive system for retrieving, processing, analyzing, an
 
 ## Project Overview
 
-
-
+General Aviation flightline personnel are responsible for servicing a wide variety of aircraft, many of which have unique needs and sometimes unfamiliar configurations. Aircraft servicing mistakes have resulted in many expensive maintenance mishaps and, most seriously, in severalfatality accidents. One of the most critical and costly risks they face is misfueling - introducing the wrong type of fuel into the aircraft.
+There are also cases that existing aircraft identification tools are often designed for aviation enthusiasts or casual plane spotters - not for operational use by flightline technicians. project was started to directly address the existing gaps. We aim to deliver an easy to use, real-time aircraft classification model that can run on an edge device for use by General Aviation flightline technicians. A simple image of an aircraft will return the relevant aircraft information along with an accuracy prediction, likely alternatives for comparison, instructions and safety information for routine maintenance and checks, as well as a lock out feature or supervisor override requirements for exceptions. This project is motivated by these key considerations:
+- Risk Reduction: reducing the likelihood of costly or fatal servicing errors such as misfueling
+- Environmental Efficiency: edge-based image classifiers are up to 10K times more efficient than ChatGPT 4o.
+- Operational Reliability: No internet access required increases reliability.
 ---
 
 ## Key Components
 
 ### Data Pipeline (src)
 
-The data pipeline provides a structured framework for retrieving and processing aircraft images data.
+We utilized the Oxford University benchmark dataset Fine-Grained Visual Classification of Aircraft (FGVC-Aircraft). We developed code to check for the dataset locally, and if not available,the code downloads, decompresses, and organizes the dataset into a folder designated for the purpose. The benchmark dataset is well documented and contains 10,000 unlabeled images with accompanying text files that provide labels as needed for each image. In addition, the data is already split into Test, Train, and Validation. Data labels are provided for three levels of aircraft classification - manufacturer (30), family (70), and variant (100). 
 
 #### Key Features:
- - Retrieval Engine: Fetches flight data using time intervals and query functions
- - Pipeline Modules: Specialized pipelines for different data types:
-   - FlightsPipeline: Retrieves flight data with metadata
-   - StateVectorPipeline: Retrieves state vector data (position, velocity, etc.)
- - Query Modules: SQL query generators for different data types
- - Transformation Modules: Data preprocessing utilities
+ - FGVCAircraftDataset: A customized class to better retrieve and direct to the index of images labeled through several .txt files
+ - Models: Specialized pipelines for different data types:
+   - Customized CNN: Retrieves flight data with metadata
+   - Pre-trained: Such as ResNet50 and EfficientNet
+   - Attention-mechanism: such as Context-Aware Attentional Pooling (CAP) and Squeeze-and-Excitation (SE)
+ - Utilities: SQL query generators for different data types
+ - Transformation: We choose [Albumentationsx](https://albumentations.ai/docs/) over Pytorch default v2 due to efficiency and speed. We resized our images consistently to 224x224 shape throughout our training and evaluation.
 
 ### Model Tuning
-  The state prediction component uses machine learning to predict future aircraft states based on historical trajectory data.
+  The model tuning component uses [Optuna](https://optuna.readthedocs.io/en/stable/) package to instantiate and optimize a study object by wrapping all the hyper-parameters we care such as .
 
-#### Models Implemented:
+#### Hyper-parameters considered:
 
- - Transformer: Attention-based sequence model for capturing complex temporal dependencies
- - LSTM: Long Short-Term Memory network for sequential data
- - FFNN: Feed-Forward Neural Network for simpler prediction tasks
- - XGBoost: Gradient boosting for tabular data with engineered features
- - Kalman Filter: Traditional state estimation approach
+ - Models: Attention-based sequence model for capturing complex temporal dependencies
+ - loss_function: Long Short-Term Memory network for sequential data
+ - optimizer: Feed-Forward Neural Network for simpler prediction tasks
+ - scheduler: Gradient boosting for tabular data with engineered features
+ - batch_size: Traditional state estimation approach
+ - num_epochs: 
 
 
 #### Key Features:
@@ -84,6 +89,11 @@ The flight classification component uses unsupervised learning techniques to ide
 The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`.
 
 #### Key Techniques:
+ - Transformer: Attention-based sequence model for capturing complex temporal dependencies
+ - LSTM: Long Short-Term Memory network for sequential data
+ - FFNN: Feed-Forward Neural Network for simpler prediction tasks
+ - XGBoost: Gradient boosting for tabular data with engineered features
+ - Kalman Filter: Traditional state estimation approach
 
  - Dynamic Time Warping (DTW): Algorithm for measuring similarity between temporal sequences
  - K-means Clustering: Unsupervised clustering to identify natural groupings of flight patterns
@@ -93,7 +103,11 @@ The flight classification component is primarily implemented in Jupyter notebook
 
  - Support for multi-dimensional DTW to compare multiple flight attributes
  - Prototype-based classification for known flight categories
- - CNN-based classification after unsupervised labeling
+ - CNN-based classification after unsupervised labeling - Model training and evaluation scripts
+ - Hyperparameter optimization
+ - Comprehensive metrics and visualization tools
+ - Prediction capabilities for single flights or batches
+ - Analysis tools for model performance and failure cases
 
 ---
 
