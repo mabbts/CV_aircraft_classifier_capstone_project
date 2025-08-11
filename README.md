@@ -1,5 +1,13 @@
 # Project Look! Up into the sky
-![Look-up-in-the-sky](docs/title_banner.png)
+![Look-up-in-the-sky](docs/aircraft_banner.png)
+
+.___  __ /\                        .__                      ._.
+|   |/  |)/ ______ _____    ______ |  | _____    ____   ____| |
+|   \   __\/  ___/ \__  \   \____ \|  | \__  \  /    \_/ __ \ |
+|   ||  |  \___ \   / __ \_ |  |_> >  |__/ __ \|   |  \  ___/\|
+|___||__| /____  > (____  / |   __/|____(____  /___|  /\___  >_
+               \/       \/  |__|             \/     \/     \/\/
+
 
 # Multi-class Visual Classifier for Aircraft
 
@@ -122,13 +130,17 @@ Below is a high-level overview of the repository layout:
 
 Clone the repo
 
+```
 git clone https://github.com/mabbts/CV_aircraft_classifier_capstone_project.git
 
 cd CV_aircraft_classifier_capstone_project
+```
 
 Run the script
 
+```
 python Dashboard.py
+```
 
 ### Data Pipeline
 
