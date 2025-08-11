@@ -157,15 +157,11 @@ pip install -r requirements.txt
 ```
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 ```
-6. Activate GPU support on Mac M-series chips:
+5. Activate GPU support on Mac M-series chips:
 ```
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
-7. Run the Dashboard:
-All notebooks and scripts assume the repository root as the working directory.
-```
-python Dashboard.py
-```
+
 
 ### Model Tuning
 
@@ -173,8 +169,15 @@ python Dashboard.py
 
 ### Aircraft Classification
 
-The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`
+All notebooks and scripts assume the repository root as the working directory.
 
+The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`, and `notebooks/Viz.ipynb` for visualization.
+
+To run the final dashboard `apps/Dashboard.py`
+
+```
+python Dashboard.py
+```
 
 ---
 
@@ -217,19 +220,19 @@ Aircraft Classification:
 ---
 The following resources were consulted during the development of this project:
 
-**Performance Analysis of Deep Learning Algorithms Implemented Using PyTorch in Image Recognition**
+- **Performance Analysis of Deep Learning Algorithms Implemented Using PyTorch in Image Recognition**
 [Open Access - ScienceDirect]( https://www.sciencedirect.com/science/article/pii/S1877050924028084)
 
-**Benchmarking Deep Learning Models on NVIDIA Jetson Nano forcReal-Time Systems: An Empirical Investigation**
+- **Benchmarking Deep Learning Models on NVIDIA Jetson Nano forcReal-Time Systems: An Empirical Investigation**
 [Open Access - ScienceDirect](https://www.sciencedirect.com/science/article/pii/S1877050925010178)
 
-**Aircraft-Type Classification Using Deep Learning Algorithms**
+- **Aircraft-Type Classification Using Deep Learning Algorithms**
 [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/10705261)
 
-**ANALYSIS OF EFFECTIVE IMAGE PROCESSING METRICS ON RASPBERRY PI AND NVIDIA JETSON NANO**
+- **ANALYSIS OF EFFECTIVE IMAGE PROCESSING METRICS ON RASPBERRY PI AND NVIDIA JETSON NANO**
 [ResearchGate](https://www.researchgate.net/publication/387534040_ANALYSIS_OF_EFFECTIVE_IMAGE_PROCESSING_METRICS_ON_RASPBERRY_PI_AND_NVIDIA_JETSON_NANO)
 
-**General Aviation Aircraft Identification at Non-Towered Airports Using a Two-Step Computer Vision-Based Approach**
+- **General Aviation Aircraft Identification at Non-Towered Airports Using a Two-Step Computer Vision-Based Approach**
 [IEEE Xplore](https://ieeexplore.ieee.org/document/9770072)
 
 ## Contributing
