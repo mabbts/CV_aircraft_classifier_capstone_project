@@ -1,5 +1,5 @@
 # Project Look! Up into the sky
-Place holder text.
+![Look-up-in-the-sky](docs/title_banner.png)
 
 # Multi-class Visual Classifier for Aircraft
 
