@@ -187,7 +187,7 @@ def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
                 break
         return (
             f"Training for {num_epochs} epochs completed. Best model with {num_classes} classes at {annot} level saved as best_model_dash.pth"
-            f"with val loss {best_val_loss:.2f}", accuracy {best_val_acc:.2f} at epoch {best_epoch}.",
+            f"with val loss {best_val_loss:.2f}, accuracy {best_val_acc:.2f} at epoch {best_epoch}.",
             {'num_classes': num_classes, 'class_names': class_names}
         )
     return "", {}
@@ -328,4 +328,4 @@ port = find_free_port()
 if __name__ == '__main__':
     # Launch browser a second after server starts
     Timer(1, open_browser).start()
-    app.run(debug=True, port=port)
+    app.run(debug=True, port=port, use_reloader=False)

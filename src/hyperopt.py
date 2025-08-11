@@ -14,7 +14,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.model_selection import StratifiedKFold
 import optuna
 from optuna.trial import TrialState
-#from optuna.integration import PyTorchIgnitePruningHandler
 
 from functools import partial
 import random
@@ -37,10 +36,6 @@ from torchvision.utils import make_grid, draw_bounding_boxes, draw_segmentation_
 from torchvision import datasets
 from torchvision.transforms import ToTensor, v2, ToPILImage
 from torchvision.io import decode_image
-
-# from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
-# from ignite.metrics import Accuracy, Loss, RunningAverage, ConfusionMatrix
-# from ignite.handlers import ModelCheckpoint, EarlyStopping
 
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
