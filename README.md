@@ -33,6 +33,7 @@ This project is a comprehensive system for retrieving, processing, analyzing, an
 - [Example Usage](#example-usage)
 - [Current Progress](#current-progress)
 - [Next Steps](#next-steps)
+- [Reference](#reference)
 - [Contributing](#contributing)
 
 
@@ -49,32 +50,32 @@ This project is a comprehensive system for retrieving, processing, analyzing, an
 The data pipeline provides a structured framework for retrieving and processing aircraft images data.
 
 #### Key Features:
-  Retrieval Engine: Fetches flight data using time intervals and query functions
-  Pipeline Modules: Specialized pipelines for different data types:
-    FlightsPipeline: Retrieves flight data with metadata
-    StateVectorPipeline: Retrieves state vector data (position, velocity, etc.)
-  Query Modules: SQL query generators for different data types
-  Transformation Modules: Data preprocessing utilities
+ - Retrieval Engine: Fetches flight data using time intervals and query functions
+ - Pipeline Modules: Specialized pipelines for different data types:
+   - FlightsPipeline: Retrieves flight data with metadata
+   - StateVectorPipeline: Retrieves state vector data (position, velocity, etc.)
+ - Query Modules: SQL query generators for different data types
+ - Transformation Modules: Data preprocessing utilities
 
 ### Model Tuning
   The state prediction component uses machine learning to predict future aircraft states based on historical trajectory data.
 
 #### Models Implemented:
 
-  Transformer: Attention-based sequence model for capturing complex temporal dependencies
-  LSTM: Long Short-Term Memory network for sequential data
-  FFNN: Feed-Forward Neural Network for simpler prediction tasks
-  XGBoost: Gradient boosting for tabular data with engineered features
-  Kalman Filter: Traditional state estimation approach
+ - Transformer: Attention-based sequence model for capturing complex temporal dependencies
+ - LSTM: Long Short-Term Memory network for sequential data
+ - FFNN: Feed-Forward Neural Network for simpler prediction tasks
+ - XGBoost: Gradient boosting for tabular data with engineered features
+ - Kalman Filter: Traditional state estimation approach
 
 
 #### Key Features:
 
-  Model training and evaluation scripts
-  Hyperparameter optimization
-  Comprehensive metrics and visualization tools
-  Prediction capabilities for single flights or batches
-  Analysis tools for model performance and failure cases
+ - Model training and evaluation scripts
+ - Hyperparameter optimization
+ - Comprehensive metrics and visualization tools
+ - Prediction capabilities for single flights or batches
+ - Analysis tools for model performance and failure cases
 
 
 ### Aircraft Classification 
@@ -84,15 +85,15 @@ The flight classification component is primarily implemented in Jupyter notebook
 
 #### Key Techniques:
 
-  Dynamic Time Warping (DTW): Algorithm for measuring similarity between temporal sequences
-  K-means Clustering: Unsupervised clustering to identify natural groupings of flight patterns
-  Prototype Matching: Comparison of flight patterns against predefined prototypes
+ - Dynamic Time Warping (DTW): Algorithm for measuring similarity between temporal sequences
+ - K-means Clustering: Unsupervised clustering to identify natural groupings of flight patterns
+ - Prototype Matching: Comparison of flight patterns against predefined prototypes
 
 #### Features:
 
-  Support for multi-dimensional DTW to compare multiple flight attributes
-  Prototype-based classification for known flight categories
-  CNN-based classification after unsupervised labeling
+ - Support for multi-dimensional DTW to compare multiple flight attributes
+ - Prototype-based classification for known flight categories
+ - CNN-based classification after unsupervised labeling
 
 ---
 
@@ -128,7 +129,7 @@ Below is a high-level overview of the repository layout:
 
 ```
 ---
-## Interactive .html Link to Visualization
+### Interactive .html Link to Visualization
 [Click to Open]( https://mabbts.github.io/CV_aircraft_classifier_capstone_project/)
 
 
@@ -182,15 +183,15 @@ The flight classification component is primarily implemented in Jupyter notebook
 Data Pipeline: Fully implemented and tested for both flight data and state vector data
 
 Model Turning:
-  Implemented multiple model architectures (Transformer, LSTM, XGBoost)
-  Created comprehensive evaluation framework
-  Analyzed model performance and failure cases
+ - Implemented multiple model architectures (Transformer, LSTM, XGBoost)
+ - Created comprehensive evaluation framework
+ - Analyzed model performance and failure cases
   
 Aircraft Classification:
-  Implemented DTW-based similarity measurement
-  Created K-means clustering for flight pattern identification
-  Developed prototype matching for classification
-  Explored CNN-based classification after unsupervised labeling
+ - Implemented DTW-based similarity measurement
+ - Created K-means clustering for flight pattern identification
+ - Developed prototype matching for classification
+ - Explored CNN-based classification after unsupervised labeling
   
 ---
 
@@ -198,21 +199,21 @@ Aircraft Classification:
 
 Data Pipeline:
 
-  Support for additional data sources
-  Real-time data streaming capabilities
+ - Support for additional data sources
+ - Real-time data streaming capabilities
 Model Tuning:
 
-  Multi-modal prediction incorporating weather data
-  Uncertainty quantification in predictions
-  Ensemble methods combining multiple model types
+ - Multi-modal prediction incorporating weather data
+ - Uncertainty quantification in predictions
+ - Ensemble methods combining multiple model types
   
 Aircraft Classification:
 
-  Integration of supervised learning with domain expert labels
-  Anomaly detection for unusual flight patterns
-  Real-time classification capabilities
+ - Integration of supervised learning with domain expert labels
+ - Anomaly detection for unusual flight patterns
+ - Real-time classification capabilities
 
-
+## Reference
 ---
 The following resources were consulted during the development of this project:
 
@@ -234,9 +235,9 @@ The following resources were consulted during the development of this project:
 ## Contributing
 This project is part of a course requirement, but feedback, suggestions, and ideas are welcome! Feel free to open issues or submit pull requests if you have improvements to suggest.
 
-  Issues: For bug reports or feature requests
+ - Issues: For bug reports or feature requests
   
-  Pull Requests: We welcome code contributions—please be sure to include clear descriptions and testing steps
+ - Pull Requests: We welcome code contributions—please be sure to include clear descriptions and testing steps
 
 
 
