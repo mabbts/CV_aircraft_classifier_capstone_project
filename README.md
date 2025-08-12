@@ -148,7 +148,7 @@ Below is a high-level overview of the repository layout:
 
 ### Static and Interactive Outputs
 
- - [docs]`docs/.png`
+ - [static png](https://github.com/mabbts/CV_aircraft_classifier_capstone_project/tree/main/docs)`docs/.png`
  - [interactive html]( https://mabbts.github.io/CV_aircraft_classifier_capstone_project/)`docs/.html`
 
 ## Example Usage
