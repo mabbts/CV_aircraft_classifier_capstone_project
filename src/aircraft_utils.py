@@ -14,7 +14,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.model_selection import StratifiedKFold
 import optuna
 from optuna.trial import TrialState
-#from optuna.integration import PyTorchIgnitePruningHandler
 
 from functools import partial
 import random
@@ -38,10 +37,6 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor, v2, ToPILImage
 from torchvision.io import decode_image
 
-# from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
-# from ignite.metrics import Accuracy, Loss, RunningAverage, ConfusionMatrix
-# from ignite.handlers import ModelCheckpoint, EarlyStopping
-
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
 from torch.amp import GradScaler, autocast
@@ -54,22 +49,16 @@ import sys
 import io
 import base64
 
-# # Starting from chocp/, go up two levels to parent_dir/
-# parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
+# cache_dir = Path.home() / "Capstone" / "FGVCAircraft"
+# cache_dir.mkdir(parents=True, exist_ok=True)
+# datasets.FGVCAircraft(root = str(cache_dir), download=True)
+# ROOT = cache_dir / "fgvc-aircraft-2013b" / "data"
+from data_utils import FGVCAircraftDataset, get_datasets, get_loaders, get_raw
 
-# # Prepend to sys.path so Python can find src/
-# if parent_dir not in sys.path:
-#     sys.path.insert(0, parent_dir)
-
-# from src.chocp_dataset import FGVCAircraftDataset
-cache_dir = Path.home() / "Capstone" / "FGVCAircraft"
-cache_dir.mkdir(parents=True, exist_ok=True)
-datasets.FGVCAircraft(root = str(cache_dir), download=True)
-#ROOT = 'c:\\Users\\chihp\\UMich\\SIADS\\699\\FGVC\\fgvc-aircraft-2013b\\data'
-ROOT = cache_dir / "fgvc-aircraft-2013b" / "data"
+ROOT = get_raw()
 
 # Check if GPU is available
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
 # For evaluation of valid set
 def top_k_accuracy(output, target, k=5):

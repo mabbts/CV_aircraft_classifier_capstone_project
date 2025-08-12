@@ -14,7 +14,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.model_selection import StratifiedKFold
 import optuna
 from optuna.trial import TrialState
-#from optuna.integration import PyTorchIgnitePruningHandler
 
 from functools import partial
 import random
@@ -38,10 +37,6 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor, v2, ToPILImage
 from torchvision.io import decode_image
 
-# from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
-# from ignite.metrics import Accuracy, Loss, RunningAverage, ConfusionMatrix
-# from ignite.handlers import ModelCheckpoint, EarlyStopping
-
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
 from torch.amp import GradScaler, autocast
@@ -55,21 +50,13 @@ import io
 import base64
 
 # Check if GPU is available
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
 def get_raw():
-    # # Starting from chocp/, go up two levels to parent_dir/
-    # parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
 
-    # # Prepend to sys.path so Python can find src/
-    # if parent_dir not in sys.path:
-    #     sys.path.insert(0, parent_dir)
-
-    # from src.chocp_dataset import FGVCAircraftDataset
     cache_dir = Path.home() / "Capstone" / "FGVCAircraft"
     cache_dir.mkdir(parents=True, exist_ok=True)
     datasets.FGVCAircraft(root = str(cache_dir), download=True)
-    #ROOT = 'c:\\Users\\chihp\\UMich\\SIADS\\699\\FGVC\\fgvc-aircraft-2013b\\data'
     ROOT = cache_dir / "fgvc-aircraft-2013b" / "data"
     return ROOT    
 
@@ -195,7 +182,6 @@ def get_loaders(img_size = 224, batch_size = 32, annot = 'manufacturer'):
     ToTensorV2()
     ])
     test_tf = A.Compose([
-        #A.LongestMaxSize(max_size=256)
         A.Resize(img_size, img_size),
         A.Normalize(mean=mean, std=std),
         ToTensorV2()
@@ -213,21 +199,13 @@ def get_loaders(img_size = 224, batch_size = 32, annot = 'manufacturer'):
     train_loader = DataLoader(train_dataset, batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
+
     return train_loader, val_loader, test_loader, num_classes, class_names
 
 
 def get_datasets(img_size = 224, batch_size = 32, annot = 'manufacturer'):
     mean=[0.485,0.456,0.406]
     std=[0.229,0.224,0.225]
-
-    # train_tf = A.Compose([
-    #     A.RandomResizedCrop((img_size, img_size)),  # A.Resize(img_size, img_size)
-    #     A.HorizontalFlip(p=0.5),
-    #     A.Affine(scale=(0.9, 1.1), translate_percent=(0.05, 0.05), rotate=(-15, 15), p=0.5),
-    #     A.RandomBrightnessContrast(p=0.5),
-    #     A.Normalize(mean=mean, std=std),
-    #     ToTensorV2()
-    # ])
     
     train_tf = A.Compose([
     A.RandomResizedCrop((img_size, img_size)),
@@ -262,7 +240,6 @@ def get_datasets(img_size = 224, batch_size = 32, annot = 'manufacturer'):
     ])
 
     test_tf = A.Compose([
-        #A.LongestMaxSize(max_size=256)
         A.Resize(img_size, img_size),
         A.Normalize(mean=mean, std=std),
         ToTensorV2()
@@ -280,4 +257,5 @@ def get_datasets(img_size = 224, batch_size = 32, annot = 'manufacturer'):
     train_loader = DataLoader(train_dataset, batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size, shuffle=False)
+    
     return train_dataset, val_dataset, test_dataset

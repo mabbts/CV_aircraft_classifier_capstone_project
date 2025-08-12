@@ -59,7 +59,7 @@ import aircraft_utils, models
 ROOT = get_raw()
 
 # Check if GPU is available
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
 # initialize dash app.
 app = dash.Dash(__name__)
@@ -101,11 +101,9 @@ app.layout = html.Div([
     html.Div(id='predict-controls', children=[
         html.Label("Number of Samples to Predict:"),
         dcc.Input(id='num-samples', type='number', min=1, max=50, value=10),
-        # html.Br(),
         html.Label("Select Prediction Level:"),
         dcc.Dropdown(id='predict-level-dropdown', options=[{'label': lvl.title(), 'value': lvl} for lvl in LEVELS], value='manufacturer'),
         html.Button('Run Prediction', id='predict-button', n_clicks=0),
-        #html.Div(id='prediction-output')
         
         dcc.Loading(
             id='loading-predict',
@@ -126,7 +124,7 @@ app.layout = html.Div([
         dcc.Dropdown(id='class-dropdown'),
         html.Div(id='image-output', style={'display': 'flex', 'flexWrap': 'wrap'})
     ]),
-    #dcc.Store(id='model-meta-store')
+
     dcc.Store(id='model-meta-store', data={})
 ])
 @app.callback(
@@ -177,8 +175,8 @@ def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
             scheduler.step(val_loss)
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
-                best_val_acc = val_acc  # <-- store accuracy at best val loss
-                best_epoch = epoch      # <-- store the epoch number
+                best_val_acc = val_acc  
+                best_epoch = epoch      
                 epochs_without_improvement = 0
                 torch.save(model.state_dict(), model_path)
             else:
@@ -199,33 +197,6 @@ def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
     State('num-samples', 'value'),
     State('model-meta-store', 'data')
 )
-# def run_prediction(n_clicks, mode, level, num_samples, model_meta):
-#     if n_clicks > 0 and level:
-#         try:
-#             if mode == 'pretrain':
-#                 model_path = os.path.join(os.pardir, "models", f"best_model_{level}.pth")
-#                 _, _, test_loader, num_classes, class_names = get_loaders(img_size=224, batch_size=16, annot=level)
-#             else:
-#                 num_classes = model_meta.get('num_classes')
-#                 class_names = model_meta.get('class_names')
-#                 if num_classes is None:
-#                     raise ValueError("Model metadata missing. Please run training first.")
-#                 model_path = os.path.join(os.pardir, "models", "best_model_dash.pth")
-#             model = models.CAPResNet(num_classes, drop=0.3563).to(device)
-#             model.load_state_dict(torch.load(model_path))
-#             model.eval()
-#             test_dataset = get_datasets(224, 16, level)[2]
-#             buf = io.BytesIO()
-#             aircraft_utils.visualize_predictions(model, test_dataset, num_samples=num_samples)
-#             plt.savefig(buf, format='png')
-#             plt.close()
-#             buf.seek(0)
-#             encoded = base64.b64encode(buf.read()).decode('utf-8')
-#             img_src = f'data:image/png;base64,{encoded}'
-#             return html.Img(src=img_src, style={'width': '100%', 'marginTop': '20px'})
-#         except Exception as e:
-#             return html.Div(f"Error running prediction: {str(e)}", style={'color': 'red'})
-#     return ""
 
 
 def run_prediction(n_clicks, mode, level, num_samples, model_meta):
@@ -246,14 +217,8 @@ def run_prediction(n_clicks, mode, level, num_samples, model_meta):
             model.eval()
 
             test_dataset = get_datasets(224, 16, level)[2]
-            #buf = io.BytesIO()
-            fig=aircraft_utils.visualize_predictions_plotly(model, test_dataset, num_samples=num_samples)#
-            #plt.savefig(buf, format='png')
-            #plt.close()
-            #buf.seek(0)
-            #encoded = base64.b64encode(buf.read()).decode('utf-8')
-            #img_src = f'data:image/png;base64,{encoded}'
-            #return html.Img(src=img_src, style={'width': '100%', 'marginTop': '20px'})
+            fig=aircraft_utils.visualize_predictions_plotly(model, test_dataset, num_samples=num_samples)
+
             return dcc.Graph(figure=fig, style={'width': '100%', 'marginTop': '20px'})
         except Exception as e:
             return html.Div(f"Error running prediction: {str(e)}", style={'color': 'red'})
@@ -326,6 +291,6 @@ def open_browser():
 port = find_free_port()   
 
 if __name__ == '__main__':
-    # Launch browser a second after server starts
+
     Timer(1, open_browser).start()
     app.run(debug=True, port=port, use_reloader=False)

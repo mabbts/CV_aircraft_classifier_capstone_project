@@ -14,7 +14,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from sklearn.model_selection import StratifiedKFold
 import optuna
 from optuna.trial import TrialState
-#from optuna.integration import PyTorchIgnitePruningHandler
 
 from functools import partial
 import random
@@ -38,10 +37,6 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor, v2, ToPILImage
 from torchvision.io import decode_image
 
-# from ignite.engine import Events, create_supervised_trainer, create_supervised_evaluator
-# from ignite.metrics import Accuracy, Loss, RunningAverage, ConfusionMatrix
-# from ignite.handlers import ModelCheckpoint, EarlyStopping
-
 from pathlib import Path
 from torch.utils.tensorboard import SummaryWriter
 from torch.amp import GradScaler, autocast
@@ -55,7 +50,7 @@ import io
 import base64
 
 # Check if GPU is available
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
 # Simple CNN Backbone
 class SimpleCNN(nn.Module):
