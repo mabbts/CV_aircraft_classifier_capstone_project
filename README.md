@@ -91,25 +91,22 @@ We utilized the Oxford University benchmark dataset Fine-Grained Visual Classifi
 We apply the best set of hyperparameters just obtained, set early stopping patience at 10 epochs and run for 50-80 epochs using the most conservative top-1 accuracy as our evaluation metric we had achieved 85%, 80% and 68% respectively for our three hierarchy aircraft level. The flight classification component is primarily implemented in Jupyter notebooks for training and evaluation demonstration purpose, `notebooks/Base.ipynb`.
 
 #### Key Techniques:
- - Transformer: Attention-based sequence model for capturing complex temporal dependencies
- - LSTM: Long Short-Term Memory network for sequential data
- - FFNN: Feed-Forward Neural Network for simpler prediction tasks
- - XGBoost: Gradient boosting for tabular data with engineered features
- - Kalman Filter: Traditional state estimation approach
-
- - Dynamic Time Warping (DTW): Algorithm for measuring similarity between temporal sequences
- - K-means Clustering: Unsupervised clustering to identify natural groupings of flight patterns
- - Prototype Matching: Comparison of flight patterns against predefined prototypes
+ - Models, Dropout Rate: We extend our base model to add Context-Aware Attentional Pooling (CAP) with ResNet50 backbone as our core model body with dropout rate set at 0.3563;
+ - Loss, Label Smoothing: We apply CrossEntropyLoss Function and leave default label smoothing at 0.1
+ - Optimizer, Learning Rate, Weight Decay: Adam optimizer with learning rate is 5.1872e-05 and weight decay set at 0.002925
+ - Scheduler: ReduceLROnPlateau
+ - Evaluation: Top-k accuracy and F1 score
+ - Confusion Matrix: Algorithm for measuring similarity between temporal sequences
+ - Heatmap + Lollipop scatter plot: Unsupervised clustering to identify natural groupings of flight patterns
+ - Performance Curve: Comparison of flight patterns against predefined prototypes
 
 #### Features:
 
- - Support for multi-dimensional DTW to compare multiple flight attributes
- - Prototype-based classification for known flight categories
- - CNN-based classification after unsupervised labeling - Model training and evaluation scripts
- - Hyperparameter optimization
- - Comprehensive metrics and visualization tools
- - Prediction capabilities for single flights or batches
- - Analysis tools for model performance and failure cases
+ - We use top-1 or traditional accuracy score along with F1 score to evaluate a robust model performance; on the follow we also record top-3 accuracy as a looser limitation given different using scenario
+ - We visualize a heatmap-style confusion matrix with diagnal line representing the specific top-1 accuracy score for each of the class
+ - We extend the confusion matrix to extract the diagnal value to plot a "lollipop" scatter plot for easier view of each class performance
+ - Best and worst 5 classes of our model predicted has been plotted
+ - Training and Validation Loss vs Accuracy across epochs are visualized as performance curve
 
 ---
 
@@ -222,15 +219,16 @@ Run Training:
  - This option allows users to tweak their own parameters in a more customized fashion rather than sticking to our production version
  - Input all your preferred parameters and click `Start Training`
  - `Run Preiction` to predict with your own trained model, notice that resulted accuracy might not be optimised
- - 
+   
 ---
 
 ## Next Steps
 
 Data Pipeline:
 
- - Support for additional data sources
- - Real-time data streaming capabilities
+ - Support for additional aircraft images data sources
+ - Real-time aircraft incoming streaming capabilities
+   
 Model Tuning:
 
  - Multi-modal prediction incorporating weather data
@@ -243,6 +241,11 @@ Aircraft Classification:
  - Anomaly detection for unusual flight patterns
  - Real-time classification capabilities
 
+Applicable Dashboard:
+
+ - Adding in more flexibility for practical cusomization using case
+ - Allow for real-time incoming aircraft model recognition capability
+   
 ## Reference
 ---
 The following resources were consulted during the development of this project:
@@ -266,7 +269,6 @@ The following resources were consulted during the development of this project:
 This project is part of a course requirement, but feedback, suggestions, and ideas are welcome! Feel free to open issues or submit pull requests if you have improvements to suggest.
 
  - Issues: For bug reports or feature requests
-  
  - Pull Requests: We welcome code contributions—please be sure to include clear descriptions and testing steps
 
 
