@@ -26,12 +26,12 @@ This project is a comprehensive system for retrieving, processing, analyzing, an
 ## Table of Contents
 - [Project Overview](#project-overview)
 - [Key Components](#key-components)
-  - [Data Pipeline (src)](#data-pipeline-src)
+  - [Data Pipeline](#data-pipeline)
   - [Model Tuning](#model-tuning)
   - [Aircraft Classification](#aircraft-classification)
 - [Directory Structure](#directory-structure)
 - [Example Usage](#example-usage)
-- [Current Progress](#current-progress)
+- [Final Output Dashboard](#final-output-dashboard)
 - [Next Steps](#next-steps)
 - [Reference](#reference)
 - [Contributing](#contributing)
@@ -48,30 +48,33 @@ There are also cases that existing aircraft identification tools are often desig
 
 ## Key Components
 
-### Data Pipeline (src)
+### Data Pipeline 
 
-We utilized the Oxford University benchmark dataset Fine-Grained Visual Classification of Aircraft (FGVC-Aircraft). We developed code to check for the dataset locally, and if not available,the code downloads, decompresses, and organizes the dataset into a folder designated for the purpose. The benchmark dataset is well documented and contains 10,000 unlabeled images with accompanying text files that provide labels as needed for each image. In addition, the data is already split into Test, Train, and Validation. Data labels are provided for three levels of aircraft classification - manufacturer (30), family (70), and variant (100). 
+We utilized the Oxford University benchmark dataset Fine-Grained Visual Classification of Aircraft [(FGVC-Aircraft)](https://www.robots.ox.ac.uk/~vgg/data/fgvc-aircraft/). We developed code to check for the dataset locally, and if not available,the code downloads, decompresses, and organizes the dataset into a folder designated for the purpose. The benchmark dataset is well documented and contains 10,000 unlabeled images with accompanying text files that provide labels as needed for each image. In addition, the data is already split into Test, Train, and Validation. Data labels are provided for three levels of aircraft classification from coarse to finer - manufacturer (30), family (70), and variant (100). 
 
 #### Key Features:
- - FGVCAircraftDataset: A customized class to better retrieve and direct to the index of images labeled through several .txt files
- - Models: Specialized pipelines for different data types:
+ - Simple EDA: We understand that we might not be all familiar with aircraft class models, hence we provide several hierarchical interactive visualization such as Treemap, Sunburst or Sankey to help you get started, `notebooks/Viz.ipynb`.
+ - FGVCAircraftDataset: A customized class to better retrieve and direct to the index of images labeled through several .txt files, `src/data_utils.py`.
+ - Models: Specialized pipelines for different data types, `src/models.py`
    - Customized CNN: Retrieves flight data with metadata
    - Pre-trained: Such as ResNet50 and EfficientNet
    - Attention-mechanism: such as Context-Aware Attentional Pooling (CAP) and Squeeze-and-Excitation (SE)
- - Utilities: SQL query generators for different data types
+ - Utilities: Several customized functions to use throughout the project, `src/aircraft_utils.py`.
  - Transformation: We choose [Albumentationsx](https://albumentations.ai/docs/) over Pytorch default v2 due to efficiency and speed. We resized our images consistently to 224x224 shape throughout our training and evaluation.
 
 ### Model Tuning
-  The model tuning component uses [Optuna](https://optuna.readthedocs.io/en/stable/) package to instantiate and optimize a study object by wrapping all the hyper-parameters we care such as .
+  The model tuning component uses [Optuna](https://optuna.readthedocs.io/en/stable/), an automatic hyperparameter optimization software framework, particularly designed for machine learning, by first defining an objective function to be optimised (Study). The goal of a Study is to find out the optimal set of hyperparameter values user-defined through invoking several suggest methods of a Trial object to generate hyperparameters, we then set `n_trials=20` for instance to instantiate the process, `notebooks/hyperopt_optuna.ipynb`.
 
 #### Hyper-parameters considered:
 
- - Models: Attention-based sequence model for capturing complex temporal dependencies
- - loss_function: Long Short-Term Memory network for sequential data
- - optimizer: Feed-Forward Neural Network for simpler prediction tasks
- - scheduler: Gradient boosting for tabular data with engineered features
- - batch_size: Traditional state estimation approach
- - num_epochs: 
+ - Models: CAPResNet and SEEffNet, `trial.suggest_categorical('backbone', ['ResNet50_CAP', 'EffNet_SE'])`
+ - loss_function: CrossEntropy, LabelSmoothingCrossEntropy and FocalLoss, `trial.suggest_categorical('criterion', ['CrossEntropy', 'LabelSmoothing', 'Focal'])`
+ - optimizer: Adam, SGD and RMSprop, `trial.suggest_categorical('optimizer', ['Adam', 'SGD', 'RMSprop'])`
+ - scheduler: StepLR, CosineAnnealingLR and ReduceLROnPlateau, `trial.suggest_categorical('scheduler', ['StepLR', 'CosineAnnealingLR', 'ReduceLROnPlateau'])`
+ - batch_size: `trial.suggest_categorical('batch_size', [16, 32])`
+ - learning_rate: `trial.suggest_float('lr', 1e-5, 1e-2, log=True)`
+ - weight_decay: `trial.suggest_float('weight_decay', 1e-6, 1e-2, log=True)`
+ - dropout_rate: `trial.suggest_float('dropout_rate', 0.1, 0.5)`
 
 
 #### Key Features:
@@ -85,8 +88,7 @@ We utilized the Oxford University benchmark dataset Fine-Grained Visual Classifi
 
 ### Aircraft Classification 
 
-The flight classification component uses unsupervised learning techniques to identify and categorize flight patterns.
-The flight classification component is primarily implemented in Jupyter notebooks for exploratory analysis and visualization. The main notebook is `notebooks/Base.ipynb`.
+We apply the best set of hyperparameters just obtained, set early stopping patience at 10 epochs and run for 50-80 epochs using the most conservative top-1 accuracy as our evaluation metric we had achieved 85%, 80% and 68% respectively for our three hierarchy aircraft level. The flight classification component is primarily implemented in Jupyter notebooks for training and evaluation demonstration purpose, `notebooks/Base.ipynb`.
 
 #### Key Techniques:
  - Transformer: Attention-based sequence model for capturing complex temporal dependencies
@@ -202,21 +204,25 @@ And you should be able to see the dashboard such like:
 
 ---
 
-## Current Progress
+## Final Output Dashboard
 
-Data Pipeline: Fully implemented and tested for both flight data and state vector data
+We are wrapping all into a production dashboard aiming to give users 3 mode options switchable with radio-buttons built by plotly dash application:
 
-Model Turning:
- - Implemented multiple model architectures (Transformer, LSTM, XGBoost)
- - Created comprehensive evaluation framework
- - Analyzed model performance and failure cases
+Dataset-Viewer:
+ - First select your preferred level out of the three from a drop-down list
+ - Click `Load Dataset` to retreive images from right directory
+ - Toggle betweeen `Select Class` to view a random set of your desired airfrafts
   
-Aircraft Classification:
- - Implemented DTW-based similarity measurement
- - Created K-means clustering for flight pattern identification
- - Developed prototype matching for classification
- - Explored CNN-based classification after unsupervised labeling
-  
+Pre-trained Model:
+ - Similarly to choose 1 of 3 levels first
+ - Choose how many samples you like to predict, default is 10
+ - Click `Run Prediction` to automatically load our pre-trained model parameter as your classifier
+
+Run Training:
+ - This option allows users to tweak their own parameters in a more customized fashion rather than sticking to our production version
+ - Input all your preferred parameters and click `Start Training`
+ - `Run Preiction` to predict with your own trained model, notice that resulted accuracy might not be optimised
+ - 
 ---
 
 ## Next Steps
