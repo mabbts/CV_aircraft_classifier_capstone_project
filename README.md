@@ -22,7 +22,7 @@ This project is a comprehensive system for retrieving, processing, analyzing, an
 1. **Data Pipeline (`src`)**: A robust pipeline for retrieving and processing aircraft images data
 2. **Model Tuning (`hyperopt_optuna`)**: Applying multiple customized and pretrained models with hyper-parameter searching for the best model
 3. **Aircraft Classification (`Base`)**: Using the best model and parameters with deep learning techniques to apply classifying aircraft model variants
-4. **Aircraft Classification (`Dashboard`)**: A prototype of beta production dashboard fed with existing dataset and model training and loading capability
+4. **Production Dashboard (`Dashboard`)**: A prototype of beta production dashboard fed with existing dataset and model training and loading capability
 
 ## Table of Contents
 - [Project Overview](#project-overview)
