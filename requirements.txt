@@ -17,3 +17,11 @@ scipy==1.14.1
 altair==5.4.1
 networkx==3.3
 scikit-learn==1.5.1
+nbformat>=4.2.0
+ipykernel
+tqdm >=4.65.0
+albucore==0.0.14
+jupyterlab-widgets>=3.0.5
+widgetsnbextensions>4.0.5
+tensorboard
+nodejs
