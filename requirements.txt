@@ -19,9 +19,7 @@ networkx
 scikit-learn
 nbformat
 ipykernel
-tqdm
 albucore
 jupyterlab-widgets
-widgetsnbextensions
 tensorboard
 nodejs
