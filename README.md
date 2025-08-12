@@ -65,7 +65,8 @@ We utilized the Oxford University benchmark dataset Fine-Grained Visual Classifi
  - Transformation: We choose [Albumentationsx](https://albumentations.ai/docs/) over Pytorch default v2 due to efficiency and speed. We resized our images consistently to 224x224 shape throughout our training and evaluation.
 
 ### Model Tuning
-  The model tuning component uses [Optuna](https://optuna.readthedocs.io/en/stable/), an automatic hyperparameter optimization software framework, particularly designed for machine learning, by first defining an objective function to be optimised (Study). The goal of a Study is to find out the optimal set of hyperparameter values user-defined through invoking several suggest methods of a Trial object to generate hyperparameters, we then set `n_trials=20` for instance to instantiate the process, `notebooks/hyperopt_optuna.ipynb`.
+  The model tuning component uses [Optuna](https://optuna.readthedocs.io/en/stable/), an automatic hyperparameter optimization software framework, particularly designed for machine learning, by first defining an objective function to be optimised (Study). The goal of a Study is to find out the optimal set of hyperparameter values user-defined through invoking several suggest methods of a Trial object to generate hyperparameters, we then set `n_trials=20` for instance to instantiate the process, `notebooks/hyperopt_optuna.ipynb`. 
+
 
 #### Hyper-parameters considered:
 
@@ -81,11 +82,9 @@ We utilized the Oxford University benchmark dataset Fine-Grained Visual Classifi
 
 #### Key Features:
 
- - Model training and evaluation scripts
  - Hyperparameter optimization
- - Comprehensive metrics and visualization tools
- - Prediction capabilities for single flights or batches
- - Analysis tools for model performance and failure cases
+ - Optimisation hyper-parameters importance visualization
+![Hypo Importance](docs/imp_optuna.png)
 
 
 ### Aircraft Classification 
