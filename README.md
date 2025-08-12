@@ -31,6 +31,7 @@ This project is a comprehensive system for retrieving, processing, analyzing, an
   - [Model Tuning](#model-tuning)
   - [Aircraft Classification](#aircraft-classification)
 - [Directory Structure](#directory-structure)
+- [Visualization](#visualization)
 - [Example Usage](#example-usage)
 - [Final Output Dashboard](#final-output-dashboard)
 - [Next Steps](#next-steps)
@@ -143,9 +144,12 @@ Below is a high-level overview of the repository layout:
 
 ```
 ---
-### Interactive .html Link to Visualization
-[Click to Open]( https://mabbts.github.io/CV_aircraft_classifier_capstone_project/)
+## Visualization
 
+### Static and Interactive Outputs
+
+ - [docs]`docs/.png`
+ - [interactive html]( https://mabbts.github.io/CV_aircraft_classifier_capstone_project/)`docs/.html`
 
 ## Example Usage
 
