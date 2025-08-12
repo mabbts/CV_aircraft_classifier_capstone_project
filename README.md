@@ -232,15 +232,15 @@ Data Pipeline:
    
 Model Tuning:
 
- - Multi-modal prediction incorporating weather data
- - Uncertainty quantification in predictions
- - Ensemble methods combining multiple model types
+ - Hyperparameter searching process may significantly get slower when attempting to increase models or parameters in local machine, extending to cloud computing could gain more calculation power
+ - 
   
 Aircraft Classification:
 
- - Integration of supervised learning with domain expert labels
- - Anomaly detection for unusual flight patterns
- - Real-time classification capabilities
+ - Despite a concrete process of Deep Learning trained model, achieving seemingly satisfactory accuracy score overall, there is still significant gap when we zoom in to see our individual class performance;
+ - At variant level, de Havilland DH-82 achieved 92.12% vs Being 747-200 only had 4.7%, this indicates our model still can get confused if inter-class deviation gets vague
+ - Consider to further augment our images during training phase to enhance our model generalization capability
+ - At our current dataset there's no issue on class imbalance but do bear in mind this may not be a definitive case
 
 Applicable Dashboard:
 
