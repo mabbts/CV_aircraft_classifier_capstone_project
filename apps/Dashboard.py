@@ -163,15 +163,15 @@ def run_training(n_clicks, img_size, batch_size, annot, patience, num_epochs):
         criterion = nn.CrossEntropyLoss(label_smoothing=0.046858)
         optimizer = optim.Adam(model.parameters(), lr=5.1872e-05, weight_decay=0.002925)
         scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5)
-        scaler = GradScaler('cuda')
+        scaler = GradScaler(device)
         best_val_loss = float('inf')
         best_val_acc = 0.0
         best_epoch = -1
         epochs_without_improvement = 0
         model_path = os.path.join(os.pardir, "models", "best_model_dash.pth")
         for epoch in range(num_epochs):
-            train_loss, train_acc, _, _ = aircraft_utils.train_one_epoch(model, train_loader, criterion, optimizer, 'cuda', scaler)
-            val_loss, val_acc, _, _, _, _ = aircraft_utils.evaluate(model, val_loader, criterion, 'cuda')
+            train_loss, train_acc, _, _ = aircraft_utils.train_one_epoch(model, train_loader, criterion, optimizer, device, scaler)
+            val_loss, val_acc, _, _, _, _ = aircraft_utils.evaluate(model, val_loader, criterion, device)
             scheduler.step(val_loss)
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
