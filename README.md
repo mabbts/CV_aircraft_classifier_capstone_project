@@ -46,6 +46,11 @@ There are also cases that existing aircraft identification tools are often desig
 - Risk Reduction: reducing the likelihood of costly or fatal servicing errors such as misfueling
 - Environmental Efficiency: edge-based image classifiers are up to 10K times more efficient than ChatGPT 4o.
 - Operational Reliability: No internet access required increases reliability.
+- Here are some fun videos about technicians servicing the aircrafts
+  - [General line service technicians in the airport](https://www.youtube.com/watch?v=tkdGQD3IPe4)
+  - [Refueling an aircraft](https://www.youtube.com/watch?v=M4k-zduqGtQ)
+  - [Hot fueling a helicopter](https://www.youtube.com/watch?v=Bh2WhN1hDd0)
+    
 ---
 
 ## Key Components
