@@ -49,13 +49,12 @@ import sys
 import io
 import base64
 
-# Check if GPU is available
-device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
-
 from data_utils import FGVCAircraftDataset, get_datasets, get_loaders, get_raw
 from models import CAPResNet, SEEffNet, LabelSmoothingCrossEntropy, FocalLoss
 from aircraft_utils import train_one_epoch, evaluate, visualize_predictions
 
+# Check if GPU is available
+device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
 # Model selector
 def get_model(backbone_name, num_classes, dropout_rate):
@@ -108,7 +107,7 @@ def objective(trial):
         gamma = trial.suggest_float('gamma', 1.0, 3.0)
         criterion = FocalLoss(gamma=gamma)
 
-    scaler = GradScaler('cuda')
+    scaler = GradScaler(device)
 
     # Training loop
     best_val_loss = float('inf')

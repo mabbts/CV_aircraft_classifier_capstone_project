@@ -154,7 +154,6 @@ def get_loaders(img_size = 224, batch_size = 32, annot = 'manufacturer'):
     A.RandomResizedCrop((img_size, img_size)),
     A.HorizontalFlip(p=0.5),
     A.Affine(scale=(0.9, 1.1), translate_percent=(0.05, 0.05), rotate=(-15, 15), p=0.5),
-    
     A.OneOf([
         A.GaussianBlur(blur_limit=(3, 5), p=0.3),
         A.MotionBlur(blur_limit=(3, 5), p=0.3),
@@ -166,9 +165,7 @@ def get_loaders(img_size = 224, batch_size = 32, annot = 'manufacturer'):
             p=0.3
         )
     ], p=0.3),
-    
     A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.5),
-    
     A.CoarseDropout(
         num_holes_range=(1, 8),
         hole_height_range=(8, 16),
@@ -176,11 +173,12 @@ def get_loaders(img_size = 224, batch_size = 32, annot = 'manufacturer'):
         fill=0,
         p=0.5
     ),
-    
     A.Perspective(scale=(0.05, 0.1), p=0.3),
     A.Normalize(mean=mean, std=std),
     ToTensorV2()
     ])
+
+
     test_tf = A.Compose([
         A.Resize(img_size, img_size),
         A.Normalize(mean=mean, std=std),
@@ -211,7 +209,6 @@ def get_datasets(img_size = 224, batch_size = 32, annot = 'manufacturer'):
     A.RandomResizedCrop((img_size, img_size)),
     A.HorizontalFlip(p=0.5),
     A.Affine(scale=(0.9, 1.1), translate_percent=(0.05, 0.05), rotate=(-15, 15), p=0.5),
-    
     A.OneOf([
         A.GaussianBlur(blur_limit=(3, 5), p=0.3),
         A.MotionBlur(blur_limit=(3, 5), p=0.3),
@@ -223,9 +220,7 @@ def get_datasets(img_size = 224, batch_size = 32, annot = 'manufacturer'):
             p=0.3
         )
     ], p=0.3),
-    
     A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.5),
-    
     A.CoarseDropout(
         num_holes_range=(1, 8),
         hole_height_range=(8, 16),
@@ -233,7 +228,6 @@ def get_datasets(img_size = 224, batch_size = 32, annot = 'manufacturer'):
         fill=0,
         p=0.5
     ),
-    
     A.Perspective(scale=(0.05, 0.1), p=0.3),
     A.Normalize(mean=mean, std=std),
     ToTensorV2()

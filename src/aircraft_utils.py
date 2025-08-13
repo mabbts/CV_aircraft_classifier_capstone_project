@@ -49,10 +49,6 @@ import sys
 import io
 import base64
 
-# cache_dir = Path.home() / "Capstone" / "FGVCAircraft"
-# cache_dir.mkdir(parents=True, exist_ok=True)
-# datasets.FGVCAircraft(root = str(cache_dir), download=True)
-# ROOT = cache_dir / "fgvc-aircraft-2013b" / "data"
 from data_utils import FGVCAircraftDataset, get_datasets, get_loaders, get_raw
 
 ROOT = get_raw()
@@ -212,7 +208,7 @@ def visualize_predictions(model, test_dataset, num_samples=10, normalized=True):
     model.eval()
     samples = random.sample(range(len(test_dataset)), num_samples)
     # Check if GPU is available
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
     # Dynamically calculate rows and columns
     cols = 5
     rows = math.ceil(num_samples / cols)
@@ -243,94 +239,6 @@ def visualize_predictions(model, test_dataset, num_samples=10, normalized=True):
     plt.tight_layout()
     plt.show()
 
-# def visualize_predictions_plotly(model, dataset, class_name, num_samples=5):
-#     model.eval()
-#     fig = sub.make_subplots(rows=1, cols=num_samples)
-#     for i in range(num_samples):
-#         img, label = dataset[i]
-#         with torch.no_grad():
-#             output = model(img.unsqueeze(0).to(device))
-#             probs = torch.nn.functional.softmax(output, dim=1)
-#             pred = torch.argmax(probs, dim=1).item()
-#             confidence = probs[0][pred].item()
-#         img_np = img.permute(1, 2, 0).cpu().numpy()
-#         fig.add_trace(
-#             go.Image(z=img_np),
-#             row=1, col=i+1
-#         )
-#         fig.update_xaxes(showticklabels=False, row=1, col=i+1)
-#         fig.update_yaxes(showticklabels=False, row=1, col=i+1)
-#         fig.layout.annotations[i].text = f"{class_name[pred]}<br>({confidence:.2%})"
-#     return fig
-
-# def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized=True):
-#     """
-#     Returns a plotly.graph_objects.Figure that can be fed directly into dcc.Graph.
-#     """
-#     model.eval()
-#     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#     samples = random.sample(range(len(test_dataset)), num_samples)
-
-#     # Grid layout
-#     cols = min(5, num_samples)
-#     rows = math.ceil(num_samples / cols)
-#     fig = sub.make_subplots(rows=rows, cols=cols)
-
-#     inv_label_map = test_dataset.idx_to_class
-#     mean = [0.485, 0.456, 0.406]
-#     std = [0.229, 0.224, 0.225]
-
-#     with torch.no_grad():
-#         for idx, sample_idx in enumerate(samples):
-#             r = idx // cols + 1
-#             c = idx % cols + 1
-
-#             image, label = test_dataset[sample_idx]
-#             input_img = image.unsqueeze(0).to(device)
-#             output = model(input_img)
-#             _, pred = torch.max(output, 1)
-
-#             if normalized:
-#                 image = unnormalize(image.clone(), mean, std)
-
-#             #img_disp = image.permute(1, 2, 0).cpu().numpy().clip(0, 1)
-#             img_disp = (image.permute(1, 2, 0)
-#                   .cpu()
-#                   .numpy()
-#                   .clip(0, 1) * 255).astype(np.uint8)
-
-#             # Add image to subplot
-#             fig.add_trace(
-#                 go.Image(z=img_disp),
-#                 row=r, col=c
-#             )
-
-#             # Hide axes
-#             fig.update_xaxes(showticklabels=False, row=r, col=c)
-#             fig.update_yaxes(showticklabels=False, row=r, col=c)
-
-#             # Add annotation for prediction/actual
-#             fig.add_annotation(
-#                 text=f"Pred: {inv_label_map[pred.item()]}<br>Actual: {inv_label_map[label]}",
-#                 # xref=f"x{idx+1} domain",
-#                 # yref=f"y{idx+1} domain",
-#                 # xref="x domain", 
-#                 # yref="y domain",
-#                 xref="x domain" if idx == 0 else f"x{idx+1} domain", 
-#                 yref="y domain" if idx == 0 else f"y{idx+1} domain",
-#                 x=0.5, y=-0.15,
-#                 showarrow=False,
-#                 font=dict(size=10),
-#                 row=r, col=c
-#             )
-
-#     fig.update_layout(
-#         margin=dict(l=0, r=0, t=30, b=0),
-#         height=rows * 250,
-#         width=cols * 250
-#     )
-
-#     return fig
 
 def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized=True, cols=5):
     """
@@ -339,7 +247,8 @@ def visualize_predictions_plotly(model, test_dataset, num_samples=10, normalized
     - Values converted to uint8 to prevent dark/black images.
     """
     model.eval()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Check if GPU is available
+    device = torch.device("cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu"))
 
     k = min(num_samples, len(test_dataset))
     cols = max(1, min(cols, k))
