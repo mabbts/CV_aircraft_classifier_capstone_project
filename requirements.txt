@@ -1,4 +1,5 @@
 numpy==1.26.4
+jupyter
 pandas
 matplotlib
 seaborn
@@ -23,3 +24,4 @@ albucore
 jupyterlab-widgets
 tensorboard
 nodejs
+ipykernel
