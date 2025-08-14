@@ -15,10 +15,11 @@
                \/       \/  |__|             \/     \/     \/\/
 ```
 
-# Multi-class Fine-Grained Visual Classifier for Aircraft using Pytorch
+# Multi-Class Fine-Grained Visual Classifier for Aircraft using Pytorch
 
 This project is a comprehensive system for retrieving, processing, analyzing, and predicting aircraft PIL images from the "FGVCAircraft" dataset. It consists of four main components:
 
+0. [**Introductory Video (`Youtube`)**](https://www.youtube.com/watch?v=jNFF8Vmy2-I): A pitch video for our project
 1. **Data Pipeline (`src`)**: A robust pipeline for retrieving and processing aircraft images data
 2. **Model Tuning (`hyperopt_optuna`)**: Applying multiple customized and pretrained models with hyper-parameter searching for the best model
 3. **Aircraft Classification (`Base`)**: Using the best model and parameters with deep learning techniques to apply classifying aircraft model variants
